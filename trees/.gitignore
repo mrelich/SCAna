@@ -1,0 +1,4 @@
+# Ignore everything in this directory
+*
+# except this directory. It is needed for output
+!.gitignore
