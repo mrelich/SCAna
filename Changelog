@@ -3,7 +3,8 @@
 	* Adding setup scripts for fresh checkout that will link the last used directories
 	* Adding cleanup scripts to get ride of condor logs
 	* created first condor submission file for data.  yet to use due to debugging an issue.
-	
+	* Adding makeSpiceMie.cf file for condor
+
 2014-02-24 Matt:
 	* Creating repository for code now that I have better idea of what is needed
 	* Creating directory structure

@@ -5,11 +5,11 @@ Universe = vanilla
 Log    = condor.log
 
 ###############################
-# 3% filter
+# 1% filter
 ###############################
-Arguments = 3
-Error     = errLogs/err_$(Arguments)per.log
-Output    = outLogs/out_$(Arguments)per.log
+Arguments = 1
+Error     = errLogs/err_filter$(Arguments)per.log
+Output    = outLogs/out_filter$(Arguments)per.log
 queue
 
 
