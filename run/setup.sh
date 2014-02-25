@@ -9,3 +9,10 @@
 # shell script to be sourced is two directories up
 
 source ../../env-shell.sh
+
+# Some miscellanous directories for log files used
+# on the condor system will also be created.  You 
+# can delete these if you don't need them.
+
+mkdir outLogs
+mkdir errLogs
