@@ -11,16 +11,16 @@ from icecube.icetray import OMKey
 from icecube import portia
 from icecube import WaveCalibrator
 
-import pylab as p
+#import pylab as p
 import numpy as n
-from ROOT import TCanvas, TH1F, gROOT 
+from ROOT import TCanvas, TH1F, gROOT, TH2F
 # from DumpModule import DumpModule
 from icecube.BadDomList import bad_dom_list_static
 
 tray = I3Tray.I3Tray()
 
-outdir = "trees"
-i3outdir = "i3files"
+outdir = "../trees"
+i3outdir = "../i3files"
 argvs = sys.argv 
 argc = len(argvs)
 ###########################################################################
@@ -50,32 +50,32 @@ fileList += infiles1
 ###########################################################################
 if numeric_argv < 3 : #1%
     outname = "timediff_LEthres0.005V_SC1per_cut.hist.root"
-    outrootfile = outdir + "/SC_allNearbyDOM_SC1per_DOMcalib_before.tree.root"
+    outrootfile = outdir + "/SC2_allNearbyDOM_SC1per_DOMcalib_before.tree.root"
     outi3file = i3outdir + "/SC2_1per_EHEClean.i3.gz"
     LEthres = 0.005 * I3Units.volt
 elif numeric_argv < 10 : #3%
     outname = "timediff_LEthres0.01V_SC3per_cut.hist.root"
-    outrootfile = outdir + "/SC_allNearbyDOM_SC3per_DOMcalib_before.tree.root"
+    outrootfile = outdir + "/SC2_allNearbyDOM_SC3per_DOMcalib_before.tree.root"
     outi3file = i3outdir + "/SC2_3per_EHEClean_DOMcalib_WaveCalib.i3.gz"
     LEthres = 0.01 * I3Units.volt
 elif numeric_argv < 30 : #10%
     outname = "timediff_LEthres0.03V_SC10per_cut.hist.root"
-    outrootfile = outdir + "/SC_allNearbyDOM_SC10per_DOMcalib_before.tree.root"
+    outrootfile = outdir + "/SC2_allNearbyDOM_SC10per_DOMcalib_before.tree.root"
     outi3file = i3outdir + "/SC2_10per_EHEClean_DOMcalib_WaveCalib.i3.gz"
     LEthres = 0.03 * I3Units.volt
 elif numeric_argv < 50 : #30%
     outname = "timediff_LEthres0.07V_SC30per_cut.hist.root"
-    outrootfile = outdir + "/SC_allNearbyDOM_SC30per_DOMcalib_before.tree.root"
+    outrootfile = outdir + "/SC2_allNearbyDOM_SC30per_DOMcalib_before.tree.root"
     outi3file = i3outdir + "/SC2_30per_EHEClean_DOMcalib_WaveCalib.i3.gz"
     LEthres = 0.07 * I3Units.volt
 elif numeric_argv < 100 : #51%
     outname = "timediff_LEthres0.1V_SC51per_cut.hist.root"
-    outrootfile = outdir + "/SC_allNearbyDOM_SC51per_DOMcalib_before.tree.root"
+    outrootfile = outdir + "/SC2_allNearbyDOM_SC51per_DOMcalib_before.tree.root"
     outi3file = i3outdir + "/SC2_51per_EHEClean_DOMcalib_WaveCalib.i3.gz"
     LEthres = 0.1 * I3Units.volt
 else : #100%
     outname = outdir + "/timediff_LEthres0.28V_SC100per_cut.hist.root"
-    outrootfile = outdir + "/SC_allNearbyDOM_SC100per_DOMcalib_before.tree.root"
+    outrootfile = outdir + "/SC2_allNearbyDOM_SC100per_DOMcalib_before.tree.root"
     LEthres = 0.28 * I3Units.volt
     outi3file = i3outdir + "/SC2_100per_EHEClean_DOMcalib_WaveCalib.i3.gz"
 print outname, outrootfile
@@ -83,10 +83,11 @@ print outname, outrootfile
 i = 0
 i2=0
 results=[]
-c1 = TCanvas('c1','Example',200,10,700,500)
+#c1 = TCanvas('c1','Example',200,10,700,500)
 hpx = TH1F('hpx','px',100,-40,560)
 amp = TH1F('amp','amp',100,0.0,0.5)
 nch = TH1F('nch', 'nch', 100, 0, 1500)
+tVsAmp = TH2F('tVsAmp','tVsAmp',30000,27990,28020,100000,0,1000)
 ###########################################################################
 # This i only count p frames (?)
 def count(frame, Streams1=[icetray.I3Frame.DAQ]):
@@ -152,6 +153,34 @@ def checkndom(frame, Streams5=[icetray.I3Frame.DAQ]):
 
     if len(domlaunch) < 400:
         return False
+#####################################################################
+def saveTvsE(frame, Streams7=[icetray.I3Frame.Physics]):
+    if 'I3EventHeader' not in frame:
+        return False
+    if 'ATWDPortiaPulse' not in frame:
+        return false
+
+    # Get time
+    header = frame['I3EventHeader']
+    time = header.start_time.utc_daq_time / 1.e13
+    print "have time", time
+    # Make sure we are close to SC, so we can
+    # see maximum NPE to see differentiation
+    near_sc = [OMKey(55,d) for d in range(37, 51)]
+    pulses = frame['ATWDPortiaPulse']
+    print "have pulses", pulses
+    for omkey, portiapulse in pulses:
+        if omkey in near_sc:
+            print "\tHave dom near sc"
+            amplitude = portiapulse.GetAmplitude()/I3Units.volt
+            print "\thave amp: ", amplitude
+            tVsAmp.Print()
+            tVsAmp.Fill(time, amplitude)
+            print "\tfilled"
+
+    print "returning"
+
+    return True
 #####################################################################
 def cutwavetime(frame, Streams6=[icetray.I3Frame.DAQ]):
     if 'ATWDPortiaPulse' not in frame:
@@ -235,7 +264,7 @@ tray.AddModule( "I3Reader", "Reader")(
     ("Filenamelist", fileList)
     )
 tray.AddModule(count, "count")
-tray.AddModule(utctimes, "utctimes")
+#tray.AddModule(utctimes, "utctimes") #TURN BACK ON
 #tray.AddModule("QConverter", "qify", WritePFrame=True)
 #*************************************************
 I3Tray.load("libDomTools")
@@ -326,7 +355,8 @@ tray.AddModule( "I3Portia", "Portia") (
       ( "MakeBestPulseSeries",        False ),
       ( "PMTGain",                    10000000),
       ) 
-tray.AddModule(cutwavetime, "cutwavetime_after_portia")
+#tray.AddModule(cutwavetime, "cutwavetime_after_portia") TURN BACK ON
+#tray.AddModule(saveTvsE, "t_vs_e")
 #******************#***************************************************************
 I3Tray.load("libophelia")   
 tray.AddModule("I3EHEFirstGuess","reco")(       
@@ -387,14 +417,15 @@ tray.AddModule("TrashCan", "bye")
 tray.Execute()
 tray.Finish()
 
-c1.Divide(3)
-c1.cd(1)
-hpx.Draw()
-c1.cd(2)
-amp.Draw()
-c1.cd(3)
-nch.Draw()
-c1.Update()
-c1.Print(outname)
+# Turn off plotting for now
+#c1.Divide(3)
+#c1.cd(1)
+#hpx.Draw()
+#c1.cd(2)
+#amp.Draw()
+#c1.cd(3)
+#nch.Draw()
+#c1.Update()
+#c1.Print(outname)
 #p.plot(results, linestyle='steps') 
 #p.savefig("test.png")
