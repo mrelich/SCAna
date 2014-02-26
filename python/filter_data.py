@@ -113,24 +113,36 @@ def utctimes(frame, Streams3=[icetray.I3Frame.DAQ]):
     start_time = header.start_time
     print start_time.utc_daq_time
     if numeric_argv < 3 : #1%
-        min_start_time_utc_daq_time = 1054.5*1e13
-        max_start_time_utc_daq_time = 1056.6*1e13
+        #min_start_time_utc_daq_time = 1054.5*1e13
+        #max_start_time_utc_daq_time = 1056.6*1e13
+        min_start_time_utc_daq_time = 280.*1e13
+        max_start_time_utc_daq_time = 280.022*1e15
+        
     elif numeric_argv < 10 : #3%
-        min_start_time_utc_daq_time = 1056.7*1e13
-        max_start_time_utc_daq_time = 1058.8*1e13
+        #min_start_time_utc_daq_time = 1056.7*1e13
+        #max_start_time_utc_daq_time = 1058.8*1e13
+        min_start_time_utc_daq_time = 280.0221*1e15
+        max_start_time_utc_daq_time = 280.0438*1e15
     elif numeric_argv < 30 : #10%
-        min_start_time_utc_daq_time = 1059.5*1e13
-        max_start_time_utc_daq_time = 1061.7*1e13
+        #min_start_time_utc_daq_time = 1059.5*1e13
+        #max_start_time_utc_daq_time = 1061.7*1e13
+        min_start_time_utc_daq_time = 280.0439*1e15
+        max_start_time_utc_daq_time = 280.0636*1e15
     elif numeric_argv < 50 : #30%
-        min_start_time_utc_daq_time = 1061.7*1e13
-        max_start_time_utc_daq_time = 1063.8*1e13
+        #min_start_time_utc_daq_time = 1061.7*1e13
+        #max_start_time_utc_daq_time = 1063.8*1e13
+        min_start_time_utc_daq_time = 280.0637*1e15
+        max_start_time_utc_daq_time = 280.0875*1e15
     elif numeric_argv < 100 : #51%
-        min_start_time_utc_daq_time = 1063.8*1e13
-        max_start_time_utc_daq_time = 1065.9*1e13
-    else : #100%
-        min_start_time_utc_daq_time = 1066.0*1e13
-        max_start_time_utc_daq_time = 1068.1*1e13
-
+        #min_start_time_utc_daq_time = 1063.8*1e13
+        #max_start_time_utc_daq_time = 1065.9*1e13
+        min_start_time_utc_daq_time = 280.0876*1e15
+        max_start_time_utc_daq_time = 280.109*1e15
+    else : #100%        
+        #min_start_time_utc_daq_time = 1066.0*1e13
+        #max_start_time_utc_daq_time = 1068.1*1e13
+        min_start_time_utc_daq_time = 280.1091*1e15
+        max_start_time_utc_daq_time = 280.127*1e15
     if start_time.utc_daq_time < min_start_time_utc_daq_time or start_time.utc_daq_time > max_start_time_utc_daq_time :
         print 'time out of range'
         return False 
@@ -154,6 +166,7 @@ def checkndom(frame, Streams5=[icetray.I3Frame.DAQ]):
     if len(domlaunch) < 400:
         return False
 #####################################################################
+# User method that failed :(
 def saveTvsE(frame, Streams7=[icetray.I3Frame.Physics]):
     if 'I3EventHeader' not in frame:
         return False
@@ -264,7 +277,7 @@ tray.AddModule( "I3Reader", "Reader")(
     ("Filenamelist", fileList)
     )
 tray.AddModule(count, "count")
-#tray.AddModule(utctimes, "utctimes") #TURN BACK ON
+tray.AddModule(utctimes, "utctimes") #TURN BACK ON
 #tray.AddModule("QConverter", "qify", WritePFrame=True)
 #*************************************************
 I3Tray.load("libDomTools")
@@ -355,7 +368,7 @@ tray.AddModule( "I3Portia", "Portia") (
       ( "MakeBestPulseSeries",        False ),
       ( "PMTGain",                    10000000),
       ) 
-#tray.AddModule(cutwavetime, "cutwavetime_after_portia") TURN BACK ON
+tray.AddModule(cutwavetime, "cutwavetime_after_portia") #TURN BACK ON
 #tray.AddModule(saveTvsE, "t_vs_e")
 #******************#***************************************************************
 I3Tray.load("libophelia")   

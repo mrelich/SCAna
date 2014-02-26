@@ -33,7 +33,8 @@ seed = 75
 
 # Number of events
 #eve_num = 1000; 
-eve_num = 5; 
+#eve_num = 5; 
+eve_num = 500; 
 
 # name of ouput file 
 # This only contains partial name

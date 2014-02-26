@@ -1,5 +1,10 @@
 
-2014-02-25 Matt;
+2014-02-26 Matt:
+	* Updating scripts used to produce first SC results.
+	* Adding clean up scripts for log files
+	* Tagging v00.01
+
+2014-02-25 Matt:
 	* Adding setup scripts for fresh checkout that will link the last used directories
 	* Adding cleanup scripts to get ride of condor logs
 	* created first condor submission file for data.  yet to use due to debugging an issue.

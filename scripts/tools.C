@@ -16,6 +16,13 @@
 #include <vector>
 
 //--------------------------------------------------------//
+// Some constants
+//--------------------------------------------------------//
+
+const int m_colors[5]  = {kBlack, kBlue, kRed, kGreen+2, kMagenta};
+const int m_markers[5] = {20, 25, 24, 26, 22};
+
+//--------------------------------------------------------//
 // Retrieve a TH1 from file
 //--------------------------------------------------------//
 TH1* getHist(TFile* file, TString pname, TString xtitle,
@@ -54,7 +61,13 @@ void setAtt(TH1* &h, TString xtitle, TString ytitle,
 TCanvas* makeCanvas(TString name)
 {
 
-  return new TCanvas(name.Data(),name.Data(),700,600);
+  TCanvas* c = new TCanvas(name.Data(),name.Data(),700,600);
+  c->SetTopMargin(0.05);
+  c->SetRightMargin(0.08);
+  c->SetLeftMargin(0.12);
+  c->SetBottomMargin(0.10);
+
+  return c;
 
 }
 

@@ -7,7 +7,47 @@ Log    = condor.log
 ###############################
 # 1% filter
 ###############################
-Arguments = 1
+#Arguments = 1
+#Error     = errLogs/err_filter$(Arguments)per.log
+#Output    = outLogs/out_filter$(Arguments)per.log
+#queue
+
+###############################
+# 3% filter
+###############################
+Arguments = 3
+Error     = errLogs/err_filter$(Arguments)per.log
+Output    = outLogs/out_filter$(Arguments)per.log
+queue
+
+###############################
+# 10% filter
+###############################
+Arguments = 10
+Error     = errLogs/err_filter$(Arguments)per.log
+Output    = outLogs/out_filter$(Arguments)per.log
+queue
+
+###############################
+# 30% filter
+###############################
+Arguments = 30
+Error     = errLogs/err_filter$(Arguments)per.log
+Output    = outLogs/out_filter$(Arguments)per.log
+queue
+
+###############################
+# 51% filter
+###############################
+Arguments = 51
+Error     = errLogs/err_filter$(Arguments)per.log
+Output    = outLogs/out_filter$(Arguments)per.log
+queue
+
+###############################
+# 100% filter
+###############################
+Arguments = 100
 Error     = errLogs/err_filter$(Arguments)per.log
 Output    = outLogs/out_filter$(Arguments)per.log
 queue
