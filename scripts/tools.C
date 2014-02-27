@@ -56,6 +56,20 @@ void setAtt(TH1* &h, TString xtitle, TString ytitle,
 }
 
 //--------------------------------------------------------//
+// Set graph Attributes
+//--------------------------------------------------------//
+void setAtt(TGraph* &gr, int color, int marker)
+{
+
+  gr->SetMarkerStyle(marker);
+  gr->SetMarkerColor(color);
+  gr->SetLineColor(color);
+  gr->SetMarkerSize(1.);
+
+
+}
+
+//--------------------------------------------------------//
 // Make Canvas
 //--------------------------------------------------------//
 TCanvas* makeCanvas(TString name)
@@ -99,5 +113,18 @@ TLatex* makeLatex()
   lat->SetTextFont(42);
   lat->SetTextColor(kBlack);
   return lat;
+
+}
+
+//--------------------------------------------------------//
+// Make frame histogram
+//--------------------------------------------------------//
+TH1F* makeFrame(TString name, int nbins, float xmin, float xmax,
+		TString xtitle, TString ytitle)
+{
+
+  TH1F* h = new TH1F(name.Data(),"",nbins,xmin,xmax);
+  setAtt(h, xtitle, ytitle, kBlack, 20);
+  return h;
 
 }
