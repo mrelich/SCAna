@@ -87,15 +87,15 @@ void DrawNPE(int option)
     nbins = 100;
     bmin = 400e3;
     //bmax = 500e3;
-    bmax = 700e3;
+    bmax = 750e3;
     savename = "SC2_comparison_51per.png";
     lumi = 51;
   }
   else if(option == 5){
     cout<<"Drawing 100% luminosity"<<endl;
     files.push_back(new TFile("../trees/SC2_allNearbyDOM_SC100per_DOMcalib_before.tree.root"));
-    //files.push_back(new TFile("../trees/SC2_spicemie_hole100cm_100per.root"));
-    files.push_back(new TFile("../../SCAna_oldLumi/trees/SC2_spicemie_hole100cm_100per.root"));
+    files.push_back(new TFile("../trees/SC2_spicemie_hole100cm_100per.root"));
+    //files.push_back(new TFile("../../SCAna_oldLumi/trees/SC2_spicemie_hole100cm_100per.root"));
     nbins = 200;
     bmin = 650e3;
     bmax = 900e3;
@@ -155,7 +155,8 @@ void plot(vector<TTree*> trees, vector<TString> fnames, TString savename)
   TCut basecut               = (minimum_dom&&minimum_npe);
   
   // Variable to plot
-  TString var = "(DetectorResponseEvent_.totalBestEstimatedNPE_)";
+  //TString var = "(DetectorResponseEvent_.totalBestEstimatedNPE_)";
+  TString var = "(DetectorResponseBaseTimeWindowEvent_.totalBestEstimatedNPE_)";
 
   // Canvas
   TCanvas* c = makeCanvas("c");

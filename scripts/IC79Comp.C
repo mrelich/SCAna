@@ -13,7 +13,41 @@ float xmax = 1.e6;
 //------------------------------------------------------//
 // Main
 //------------------------------------------------------//
-void IC79Comp()
+void IC79Comp(int option)
+{
+
+  
+  if(option == 0){
+    cout<<endl;
+    cout<<"***************************************"<<endl;
+    cout<<"Plotting Data NPE vs MC NPE"<<endl;
+    cout<<"***************************************"<<endl;
+    cout<<endl;
+    plotDatavsMC();
+  }
+  if(option == 1){
+    cout<<endl;
+    cout<<"***************************************"<<endl;
+    cout<<"Plotting NPE distributions for IC79 and IC86"<<endl;
+    cout<<"***************************************"<<endl;
+    cout<<endl;
+    plotNPEComparison(false);
+    //plotNPEComparison(true);
+  }
+  else{
+    cout<<"Option not supported: "<<option<<endl;
+    cout<<"Options are: "<<endl;
+    cout<<"\t0 -- Data vs MC NPE comparison"<<endl;
+    cout<<"\t1 -- Comparing NPE shapes"<<endl;
+    return;
+  }
+
+}
+
+//------------------------------------------------------//
+// Plot Data vs MC NPE for My results and Keiichi's
+//------------------------------------------------------//
+void plotDatavsMC()
 {
 
   // Load my graph dynamically from all of my Trees
@@ -66,6 +100,145 @@ void IC79Comp()
 }
 
 //------------------------------------------------------//
+// Plot NPE comparison
+//------------------------------------------------------//
+void plotNPEComparison(bool isData)
+{
+
+  // Luminosity settings
+  vector<TString> lumis;
+  //lumis.push_back("1");
+  lumis.push_back("3");
+  //lumis.push_back("10");
+  //lumis.push_back("30");
+  //lumis.push_back("51");
+  //lumis.push_back("100");
+
+  // Make canvas
+  TCanvas* c = makeCanvas("c");
+  
+  // Tree name
+  TString tName = isData ? "RealTree" : "JulietTree";
+
+  // Define Cuts
+  TCut nDomCut    = "DetectorResponseEvent_.totalNumberOfDom_>=100";
+  TCut bestNPE    = "DetectorResponseEvent_.totalBestEstimatedNPE_>=10.0"; 
+  TCut base       = (nDomCut && bestNPE);
+  TCut less79     = "AtwdResponseChannels_.string_ <= 79"; 
+  TCut greater79  = "AtwdResponseChannels_.string_ > 79"; 
+  base = "";
+  
+  // Variable to draw:
+  //TString var = "DetectorResponseEvent_.totalBestEstimatedNPE_";
+  TString var = "DetectorResponseBaseTimeWindowEvent_.totalBestEstimatedNPE_";
+  //TString var = "AtwdResponseChannels_.estimatedNPE_";
+
+  // Loop plot and save
+  for(unsigned int i=0; i<lumis.size(); ++i){
+    
+    TString lumi = lumis.at(i);
+
+    // Get tree name
+    TString fname = buildName(lumi, isData);
+    TFile* file   = new TFile(("../trees/"+fname).Data());
+
+    // Get Mase's tree name
+    TString f_mName = buildMaseName(lumi, isData);
+    TFile* f_mFile  = new TFile(f_mName.Data());
+
+    // Get Trees
+    TTree* tree   = (TTree*) file->Get(tName.Data());
+    TTree* mTree  = (TTree*) f_mFile->Get("JulietTree"); // always same name for Mase
+
+    // Make histograms
+    TH1F* h_less79    = makeBestHist("less79",lumi);
+    setAtt(h_less79, "Best Estimate NPE", "Normalized", kBlack, 20);
+    TH1F* h_greater79 = makeBestHist("greater79",lumi);
+    setAtt(h_greater79, "Best Estimate NPE", "Normalized", kBlue, 25);
+    TH1F* h_mase79 = makeBestHist("mase79", lumi);
+    setAtt(h_mase79, "Best Estimate NPE", "Normalized", kRed, 22);
+    
+    // Draw into histograms
+    tree->Draw((var + " >> less79_"+lumi).Data(), (base&&less79), "p");
+    tree->Draw((var + " >> greater79_"+lumi).Data(), (base&&greater79), "p");
+    mTree->Draw((var + " >> mase79_"+lumi).Data(), (base), "p");
+    
+
+    // Scale and get maximum
+    h_less79->Scale(1/h_less79->Integral());
+    h_greater79->Scale(1/h_greater79->Integral());
+    h_mase79->Scale(1/h_mase79->Integral());
+    cout<<h_mase79->GetMean()<<endl;
+    if(h_less79->GetMaximum() < h_greater79->GetMaximum())
+      h_less79->SetMaximum(h_greater79->GetMaximum() * 1.2);
+    if(h_less79->GetMaximum() < h_mase79->GetMaximum())
+      h_less79->SetMaximum(h_mase79->GetMaximum() * 1.2);
+
+    // Draw
+    h_less79->Draw("");
+    h_greater79->Draw("same");
+    h_mase79->Draw("same");
+
+  }// end loop
+}
+
+//------------------------------------------------------//
+// Get best histogram for different binnings
+//------------------------------------------------------//
+TH1F* makeBestHist(TString name, TString percent)
+{
+  TString hname = name +"_"+ percent;
+
+  if( percent == "1" )   return new TH1F(hname.Data(),"",250,54e3,80e3);
+  if( percent == "3" )   return new TH1F(hname.Data(),"",200,90e3,110e3);
+  if( percent == "10" )  return new TH1F(hname.Data(),"",200,175e3,220e3);
+  if( percent == "30" )  return new TH1F(hname.Data(),"",200,320e3,450e3);
+  if( percent == "51" )  return new TH1F(hname.Data(),"",100,400e3,500e3);
+  if( percent == "100" ) return new TH1F(hname.Data(),"",200,650e3,900e3);
+
+  return new TH1F(hname.Data(),"",500,54e3,1000e3);  
+
+}
+
+//------------------------------------------------------//
+// Get tree names
+//------------------------------------------------------//
+TString buildName(TString percent, bool isData)
+{
+
+  if(isData){
+    TString fname = "SC2_allNearbyDOM_SC";
+    fname += percent;
+    fname += "per_DOMcalib_before.tree.root";
+    return fname;
+  }
+  
+  TString fname = "SC2_spicemie_hole100cm_";
+  fname += percent;
+  fname += "per.root";
+  return fname;
+
+}
+
+//------------------------------------------------------//
+// Build file name for Mase-san's list
+//------------------------------------------------------//
+TString buildMaseName(TString percent, bool isData)
+{
+
+  if(isData){
+    TString fname = "/misc/home/mase/work/I3/analysis/SC/process/V04-02-00RC1/SC2/data/";
+    fname += percent +"Per/SC2_data" + percent + "per_.root";
+    return fname;
+  }
+  
+  TString fname = "/misc/home/mase/work/I3/analysis/SC/process/V04-02-00RC1/SC2/SPICEMIE/";
+  fname += percent +"Per/SC2_spicemie_hole100cm_" + percent + "per.root";
+  return fname;
+
+}
+
+//------------------------------------------------------//
 // Get IC86 results
 //------------------------------------------------------//
 TGraphErrors* getMyGraph()
@@ -104,7 +277,7 @@ TGraphErrors* getMyGraph()
   }
   
   // Variables for plotting
-  TString var = "(DetectorResponseEvent_.totalBestEstimatedNPE_)";
+  TString var = "(DetectorResponseBaseTimeWindowEvent_.totalBestEstimatedNPE_)";
   TCut minimum_dom           = "DetectorResponseEvent_.totalNumberOfDom_>=100";
   TCut minimum_npe           = "DetectorResponseEvent_.totalBestEstimatedNPE_>=10.0";
   TCut basecut               = (minimum_dom&&minimum_npe);

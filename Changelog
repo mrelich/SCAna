@@ -1,4 +1,9 @@
 
+2014-02-28 Matt:
+	* Updating plotting macro
+	* Committing IC79 IC86 NPE comparison
+	* Adding new script to plot NPE distirbutions for 79 and 86 configurations
+
 2014-02-26 Matt:
 	* Updating scripts used to produce first SC results.
 	* Adding clean up scripts for log files
