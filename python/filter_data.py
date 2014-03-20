@@ -23,6 +23,7 @@ outdir = "../trees"
 i3outdir = "../i3files"
 argvs = sys.argv 
 argc = len(argvs)
+
 ###########################################################################
 #print "arguments ", argvs
 #print "number of arg " argc
@@ -143,6 +144,7 @@ def utctimes(frame, Streams3=[icetray.I3Frame.DAQ]):
         #max_start_time_utc_daq_time = 1068.1*1e13
         min_start_time_utc_daq_time = 280.1091*1e15
         max_start_time_utc_daq_time = 280.127*1e15
+
     if start_time.utc_daq_time < min_start_time_utc_daq_time or start_time.utc_daq_time > max_start_time_utc_daq_time :
         print 'time out of range'
         return False 
@@ -272,6 +274,7 @@ def cutwavetime(frame, Streams6=[icetray.I3Frame.DAQ]):
         amp.Fill(min_amp / I3Units.volt)
         nch.Fill(len(domlaunch))
         return True
+
 #####################################################################
 tray.AddModule( "I3Reader", "Reader")(
     ("Filenamelist", fileList)

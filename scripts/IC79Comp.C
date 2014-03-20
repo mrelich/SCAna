@@ -25,7 +25,7 @@ void IC79Comp(int option)
     cout<<endl;
     plotDatavsMC();
   }
-  if(option == 1){
+  else if(option == 1){
     cout<<endl;
     cout<<"***************************************"<<endl;
     cout<<"Plotting NPE distributions for IC79 and IC86"<<endl;
@@ -53,7 +53,11 @@ void plotDatavsMC()
   // Load my graph dynamically from all of my Trees
   TGraphErrors* gr_IC86 = getMyGraph();
   setAtt(gr_IC86, kBlue, 20);
-  
+
+  // Copy graph with a naive correction
+  TGraphErrors* gr_IC86_corr = getCorrectedGraph(gr_IC86);
+  setAtt(gr_IC86_corr, kMagenta, 22);
+
   // Keiichi's results are hard-coded from his script
   double npe_data[10] = {9.51576e+04, 1.76736e+05, 3.24418e+05, 3.89808e+05, 6.72254e+05};
   double npe_error_data[10] = {2.60323e+01, 4.85111e+01, 7.64120e+01, 1.06911e+02, 2.09812e+02};
@@ -80,6 +84,7 @@ void plotDatavsMC()
   // Draw graphs
   gr_IC86->Draw("sameep");
   gr_IC79->Draw("sameep");
+  gr_IC86_corr->Draw("sameep");
   
   // Make a y=x line
   TF1* f = new TF1("f","x",xmin,xmax);
@@ -92,10 +97,12 @@ void plotDatavsMC()
   leg->AddEntry(f, "y = x", "l");
   leg->AddEntry(gr_IC86, "IC86 (M. Relich)", "ep");
   leg->AddEntry(gr_IC79, "IC79 (K. Mase)", "ep");
+  leg->AddEntry(gr_IC86_corr, "IC86 (naive correction)","ep");
   leg->SetHeader("#bf{Preliminary}");
   leg->Draw("same");
-
-  c->SaveAs("../plots/IC79_IC86_Comparison.png");
+  
+  //c->SaveAs("../plots/IC79_IC86_Comparison.png");
+  c->SaveAs("../plots/IC79_IC86_Comparison_wCor.png");
 
 }
 
@@ -323,4 +330,28 @@ void getMeanAndError(TString fname, TString treeName, TString var,
   
 }
 
+//------------------------------------------------------//
+// Get graph with naive correction
+//------------------------------------------------------//
+TGraphErrors* getCorrectedGraph(TGraphErrors* gr)
+{
+
+  // data correction
+  double x_sf[5] = {0.96, 0.94, 0.91, 0.89, 0.85};
+  
+  // mc correction
+  double y_sf[5] = {0.97, 0.97, 0.95, 0.94, 0.91};
+
+  TGraphErrors* clone = gr->Clone("corrected_gr");
+  double x = 0;
+  double y = 0;
+  int npoints = clone->GetN();
+  for(int ip=0; ip<npoints; ++ip){
+    clone->GetPoint(ip, x, y);
+    clone->SetPoint(ip, x*x_sf[ip], y*y_sf[ip]);
+  }
+
+  return clone;
+
+}
 
