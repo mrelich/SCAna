@@ -56,6 +56,20 @@ void setAtt(TH1* &h, TString xtitle, TString ytitle,
 }
 
 //--------------------------------------------------------//
+// Set histogram attributes
+//--------------------------------------------------------//
+void setAtt(TH2* &h, TString xtitle, TString ytitle)
+{
+
+  h->GetXaxis()->SetTitle(xtitle.Data());
+  h->GetYaxis()->SetTitle(ytitle.Data());
+  h->SetTitle("");
+  h->SetStats(0);
+  h->GetYaxis()->SetTitleOffset(1.5);
+
+}
+
+//--------------------------------------------------------//
 // Set graph Attributes
 //--------------------------------------------------------//
 void setAtt(TGraph* &gr, int color, int marker)
