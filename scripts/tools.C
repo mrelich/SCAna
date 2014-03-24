@@ -19,8 +19,8 @@
 // Some constants
 //--------------------------------------------------------//
 
-const int m_colors[5]  = {kBlack, kBlue, kRed, kGreen+2, kMagenta};
-const int m_markers[5] = {20, 25, 24, 26, 22};
+const int m_colors[6]  = {kBlack, kBlue, kRed, kGreen+2, kMagenta, kAzure+8};
+const int m_markers[6] = {20, 25, 24, 26, 22, 21};
 
 //--------------------------------------------------------//
 // Retrieve a TH1 from file
@@ -143,3 +143,13 @@ TH1F* makeFrame(TString name, int nbins, float xmin, float xmax,
 
 }
 
+//--------------------------------------------------------//
+// Set maximum from histogram
+//--------------------------------------------------------//
+void setMax(TH1F* h, float& maximum)
+{
+  float h_max = h->GetMaximum();
+  if( maximum < h_max )
+    maximum = h_max;
+
+}
