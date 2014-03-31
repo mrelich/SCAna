@@ -31,7 +31,7 @@ TH1* getHist(TFile* file, TString pname, TString xtitle,
   
   TH1* hist = (TH1*) file->Get(pname.Data())->Clone(Form("%s_%i",pname.Data(),color));
   setAtt(hist, xtitle, ytitle, color, marker);
-
+  return hist;
 }
 
 //--------------------------------------------------------//

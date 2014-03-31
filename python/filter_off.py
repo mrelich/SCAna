@@ -39,10 +39,10 @@ except:
 ###########################################################################
 #fileList = ['sc2_2011/GCD_Run117447.i3.gz']
 #infiles1 = glob.glob('sc2_2011/StanCan2Filter_TestData_PhysicsFiltering_Run00117411_Subrun00000000_00000???.i3.gz')      
+#fileList = ['GCDFiles/Level2_IC86.2012_data_Run00120946_1116_GCD.i3.gz']
+#infiles1 = glob.glob('standard-candle/sc2/StandardCandle_2_Filtering_Run00120946_AllSubrunsMerged.i3.gz')
 fileList = ['GCDFiles/Level2_IC86.2012_data_Run00120946_1116_GCD.i3.gz']
-infiles1 = glob.glob('standard-candle/sc2/StandardCandle_2_Filtering_Run00120946_AllSubrunsMerged.i3.gz')
-#infiles1 = glob.glob('sc2_2011/StanCan2Filter_TestData_PhysicsFiltering_Run00117411_Subrun00000000_00000000?.i3.gz')       
-#infiles2 = glob.glob('sc2_2011/StanCan2Filter_TestData_PhysicsFiltering_Run00117411_Subrun00000000_00000001?.i3.gz')       
+infiles1 = glob.glob('standard-candle/sc1/StandardCandle_1_Filtering_Run00120946_AllSubrunsMerged.i3.gz')
 #infiles3 = glob.glob('sc2_2011/StanCan2Filter_TestData_PhysicsFiltering_Run00117411_Subrun00000000_00000002?.i3.gz')       
 infiles1.sort()
 fileList += infiles1
@@ -76,9 +76,9 @@ elif numeric_argv < 100 : #51%
     LEthres = 0.1 * I3Units.volt
 else : #100%
     outname = outdir + "/timediff_LEthres0.28V_SC100per_cut.hist.root"
-    outrootfile = outdir + "/SC2_allNearbyDOM_SC100per_DOMcalib_before.tree.root"
+    outrootfile = outdir + "/SC1_allNearbyDOM_SC100per_DOMcalib_before.tree.root"
     LEthres = 0.28 * I3Units.volt
-    outi3file = i3outdir + "/SC2_100per_EHEClean_DOMcalib_WaveCalib.i3.gz"
+    outi3file = i3outdir + "/SC1_100per_EHEClean_DOMcalib_WaveCalib.i3.gz"
 print outname, outrootfile
 ###########################################################################
 i = 0
@@ -350,7 +350,7 @@ tray.AddModule("I3WaveformSplitter", "split",
      PickUnsaturatedATWD=True
 )
 ###########################################################################               
-I3Tray.load("libportia")                                    
+#tray.load("libportia")                                    
 tray.AddModule( "I3Portia", "Portia") (
       ( "DataReadoutName",            "CleanInIceRawData" ),
       ( "OutPortiaEventName",         "PortiaEventSummary" ),

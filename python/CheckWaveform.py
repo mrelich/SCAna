@@ -37,10 +37,10 @@ fileList = ['../i3files/SC2_100per_EHEClean_DOMcalib_WaveCalib.i3.gz']
 #
 
 # File
-outfile = TFile("../plots/RootPlots/cutWaveTimeVars1.root","recreate")
+outfile = TFile("../plots/RootPlots/cutWaveTimeVars_refined.root","recreate")
 
 # Amplitude bins
-nampbins = 1000
+nampbins = 10000
 ampmin   = 0
 ampmax   = 10
 h_amp = TH1F("h_amp","",nampbins,ampmin,ampmax)
@@ -49,22 +49,26 @@ for lumi in allowedLumis:
     h_amp_perLumi.append( TH1F("h_amp_"+lumi,"",nampbins,ampmin,ampmax) )
 
 # Length of pulse vector
-npbins = 10000
+npbins = 2000
 pmin   = 0
-pmax   = 10000   
+pmax   = 2000   
 h_npulse = TH1F("h_npulse","",npbins,pmin,pmax)
 h_npulse_perLumi = []
 for lumi in allowedLumis:
     h_npulse_perLumi.append( TH1F("h_npulse_"+lumi,"",npbins,pmin,pmax) )
 
 # Time difference hists
-timebins = 10000
+timebins = 500
 tmin     = 0
-tmax     = 1000 # nanoseconds
+tmax     = 500 # nanoseconds
 h_tDiff = TH1F("h_tDiff","",timebins,tmin,tmax)
 h_tDiff_perLumi = []
+h_maxTDiff = TH1F("h_maxTDiff","",timebins,tmin,tmax)
+h_maxTDiff_perLumi = []
 for lumi in allowedLumis:
     h_tDiff_perLumi.append( TH1F("h_tDiff_"+lumi,"",timebins,tmin,tmax) )
+    h_maxTDiff_perLumi.append( TH1F("h_maxTDiff_"+lumi,"",timebins,tmin,tmax) )
+
 
 
 #
@@ -77,7 +81,7 @@ def checkTimes(frame):
     
     # Get header which has timing info
     header = frame['I3EventHeader']
-    start_time = header.start_time
+    start_time = header.start_time.utc_daq_time
     
     # Now determine if the timing info is 
     # in bounds of one of the allowed luminosities
@@ -85,7 +89,6 @@ def checkTimes(frame):
         if p_lumi.lumiInRange(allowedLumis[i],start_time):
             return i
     
-
     # If we are here, it isn't in range
     return notInRange
 
@@ -142,8 +145,16 @@ def cutwavetime(frame, Streams6=[icetray.I3Frame.DAQ]):
                     h_tDiff.Fill(time_diff)
                     if lumi_point >=0: 
                         h_tDiff_perLumi[lumi_point].Fill(time_diff)
+                    if time_diff > max_time_diff:
+                        max_time_diff = time_diff
+            
+    h_maxTDiff.Fill( max_time_diff )
+    if lumi_point >=0:
+        h_maxTDiff_perLumi[lumi_point].Fill(max_time_diff)
 
-
+    # Hoping this will speed things up
+    # by returning False...  not really
+    # any noticable increase in speed
     return False
 
 

@@ -10,18 +10,18 @@ class lumiProp:
     
     # Specify the time ranges for luminosity
     factor      = 10e14
-    per1_low    = 280     * factor
-    per1_high   = 280.02  * factor
-    per3_low    = 280.02  * factor
-    per3_high   = 280.045 * factor
-    per10_low   = 280.045 * factor
-    per10_high  = 280.065 * factor
-    per30_low   = 280.065 * factor
-    per30_high  = 280.085 * factor
-    per51_low   = 280.09  * factor
-    per51_high  = 280.11  * factor
-    per100_low  = 280.11  * factor
-    per100_high = 280.13  * factor
+    per1_low    = 280.001  * factor
+    per1_high   = 280.022  * factor
+    per3_low    = per1_high
+    per3_high   = 280.0432 * factor
+    per10_low   = per3_high
+    per10_high  = 280.0645 * factor
+    per30_low   = per10_high
+    per30_high  = 280.086  * factor
+    per51_low   = per30_high
+    per51_high  = 280.107  * factor
+    per100_low  = per51_high
+    per100_high = 280.128  * factor
 
     # Supported lumis expressed as filter percentages
     lumi_supported = ["1",
