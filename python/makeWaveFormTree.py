@@ -25,9 +25,11 @@ use_reformed_pulse = False
 #use_reformed_pulse = True
 
 if not (use_reformed_pulse):
-    atwd_wave_name =  "CalibratedATWD_Wave"
-    fadc_wave_name =  "CalibratedFADC_Wave"
+    #atwd_wave_name =  "CalibratedATWD_Wave"
+    #fadc_wave_name =  "CalibratedFADC_Wav"e
     #portia_event_name = "PortiaEventSummaryStandard"
+    atwd_wave_name =  "CalibratedATWD"
+    fadc_wave_name =  "CalibratedFADC"
     portia_event_name = "PortiaEventSummary"
 else:
     atwd_wave_name =  "ReformedATWD_Wave"
@@ -93,7 +95,19 @@ tray.AddModule("I3Reader", "reader")(
     ("FileNameList",file_list)
     )
 
-tray.AddModule(checkLumi, "checkLumi")
+#tray.AddModule(checkLumi, "checkLumi")
+
+def check(frame, Streams2=[icetray.I3Frame.Physics]):
+    if 'CalibratedATWD' not in frame:
+        return False
+    if 'CalibratedFADC' not in frame:
+        return False
+    if 'PortiaEventSummary' not in frame:
+        return False
+    return True
+
+tray.AddModule(check,"check")
+
 
 #***************************************************************
 # Root Tree Maker

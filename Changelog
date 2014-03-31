@@ -1,6 +1,7 @@
 2014-03-30 Matt:
 	* Updating analysis scripts
 	* Adding makeWaveForm* for SC1 and SC2.  Consider using one script in future.
+	* Adding updated makeWaveForm to ask for help
 
 2014-03-27 Matt:
 	* Updating analysis scripts
