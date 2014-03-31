@@ -1,4 +1,12 @@
-2013-03-24 Matt:
+2014-03-30 Matt:
+	* Updating analysis scripts
+	* Adding makeWaveForm* for SC1 and SC2.  Consider using one script in future.
+
+2014-03-27 Matt:
+	* Updating analysis scripts
+
+
+2014-03-24 Matt:
 	* Adding script to analyze cutwavetime(...) method in filter_data.py
 	* Updating DefineFilter.C which will output more plots used to make filter selection
 
