@@ -1,3 +1,10 @@
+2014-04-07 Matt:
+	* Updating analysis scripts to current state
+	* Working on consolidating filtering script into myFilter.py
+	* Adding WaveformAna.C to start looking at waveforms.
+	* New script for making waveforms from MC added.  Need to be updated
+	* Fix MC generation to also save the waveforms so I can analyze later
+
 2014-03-30 Matt:
 	* Updating analysis scripts
 	* Adding makeWaveForm* for SC1 and SC2.  Consider using one script in future.

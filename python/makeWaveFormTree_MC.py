@@ -11,12 +11,7 @@ from icecube.icetray import I3Units
 from math import *
 from os.path import expandvars
 from icecube import icetray, dataio, dataclasses, simclasses
-from LumiProp import *
 import glob
-
-
-p_lumi = lumiProp()
-
 import os
 
 eve_num = int(10)
@@ -25,22 +20,40 @@ atwd_wave_name =  "CalibratedATWD"
 fadc_wave_name =  "CalibratedFADC"
 portia_event_name = "PortiaEventSummary"
 
-#gcdFile = "GCDFiles/Level2_IC86.2012_data_Run00120946_1116_GCD.i3.gz"
-#physFileList = "StandardCandle_2_Filtering_Run00120946_AllSubrunsMerged.i3.gz"
-#dataDir = "standard-candle/sc2/"
-
-
 
 # See what lumi we are after
 lumi = "1" # %
 if len(sys.argv) > 1:
     lumi = str(sys.argv[1])
 
-# Input and output files
-physFileList = 'SC2_100per_EHEClean_DOMcalib_WaveCalib*.i3.gz'
-dataDir = '/home/mrelich/workarea/icecube/standardcandle/ehe_v04_04_00RC1/build/SCAna_nofilter/i3files/'
+# Input and output directory
+dataDir = '/home/mrelich/workarea/icecube/standardcandle/ehe_v04_04_00RC1/build/SCAna/i3files/'
 treeDir = '/home/mrelich/workarea/icecube/standardcandle/ehe_v04_04_00RC1/build/SCAna_nofilter/trees/'
-outrootfile = treeDir + 'SC2_String54_55_waveform_filter'+lumi+'.root'
+
+# Specify input and output files
+outrootfile  = treeDir
+physFileList = dataDir
+if lumi == "1":
+    physFileList += "SC2_spicemie_hole100cm_1per.i3*.gz"
+    outrootfile  += "SC2_spicemie_1per_waveform.root"
+elif lumi == "3":
+    physFileList += "SC2_spicemie_hole100cm_3per.i3*.gz"
+    outrootfile  += "SC2_spicemie_3per_waveform.root"
+elif lumi == "10":
+    physFileList += "SC2_spicemie_hole100cm_10per.i3*.gz"
+    outrootfile  += "SC2_spicemie_10per_waveform.root"
+elif lumi == "30":
+    physFileList += "SC2_spicemie_hole100cm_30per.i3*.gz"
+    outrootfile  += "SC2_spicemie_30per_waveform.root"
+elif lumi == "51":
+    physFileList += "SC2_spicemie_hole100cm_51per.i3*.gz"
+    outrootfile  += "SC2_spicemie_51per_waveform.root"
+elif lumi == "100":
+    physFileList += "SC2_spicemie_hole100cm_100per.i3*.gz"
+    outrootfile  += "SC2_spicemie_100per_waveform.root"
+else:
+    print "Lumi is not supported"
+    sys.exit()
 
 load("libicetray")
 load("libdataclasses")
@@ -51,39 +64,17 @@ load("libportia")
 load("libwaveform-tree")
 
 tray = I3Tray()
-file_list =  glob.glob(dataDir + physFileList)
+file_list =  glob.glob(physFileList)
 file_list.sort()
-#file_list.insert(0,gcdFile)
 
 print file_list
 print dataDir
 print physFileList
 
-#***************************************************************
-# Add method to check lumi
-#***************************************************************
-def checkLumi(frame, Streams1=[icetray.I3Frame.DAQ]):
-    if 'I3EventHeader' not in frame:
-        return False
-
-    # Get time
-    header = frame['I3EventHeader']
-    stTime = header.start_time.utc_daq_time
-
-    # Check if in range
-    if p_lumi.lumiInRange(lumi,stTime):
-        return True
- 
-    # otherwise not in range
-    return False
-
-
 #*************************************************
 tray.AddModule("I3Reader", "reader")(
     ("FileNameList",file_list)
     )
-
-tray.AddModule(checkLumi, "checkLumi")
 
 #***************************************************************
 # Root Tree Maker

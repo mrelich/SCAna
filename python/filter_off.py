@@ -76,9 +76,11 @@ elif numeric_argv < 100 : #51%
     LEthres = 0.1 * I3Units.volt
 else : #100%
     outname = outdir + "/timediff_LEthres0.28V_SC100per_cut.hist.root"
-    outrootfile = outdir + "/SC1_allNearbyDOM_SC100per_DOMcalib_before.tree.root"
-    LEthres = 0.28 * I3Units.volt
-    outi3file = i3outdir + "/SC1_100per_EHEClean_DOMcalib_WaveCalib.i3.gz"
+    #outrootfile = outdir + "/SC1_allNearbyDOM_SC100per_DOMcalib_before.tree.root"
+    outrootfile = outdir + "/SC1_allNearbyDOM_noFilter_tree.root"
+    #LEthres = 0.28 * I3Units.volt
+    LEthres = 0.
+    outi3file = i3outdir + "/SC1_noFilter_WaveCalib.i3.gz"
 print outname, outrootfile
 ###########################################################################
 i = 0

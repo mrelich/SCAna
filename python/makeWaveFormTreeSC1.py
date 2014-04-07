@@ -14,6 +14,7 @@ from icecube import icetray, dataio, dataclasses, simclasses
 from SC1LumiReg import *
 import glob
 
+#eve_num = int(10)
 
 p_lumi = lumiReg()
 
@@ -22,19 +23,12 @@ import os
 use_reformed_pulse = False 
 #use_reformed_pulse = True
 
-if not (use_reformed_pulse):
-    atwd_wave_name =  "CalibratedATWD_Wave"
-    fadc_wave_name =  "CalibratedFADC_Wave"
-    #portia_event_name = "PortiaEventSummaryStandard"
-    portia_event_name = "PortiaEventSummary"
-else:
-    atwd_wave_name =  "ReformedATWD_Wave"
-    fadc_wave_name =  "ReformedFADC_Wave"
-    portia_event_name = "PortiaEventSummaryReformed"
-
+atwd_wave_name =  "CalibratedATWD"
+fadc_wave_name =  "CalibratedFADC"
+portia_event_name = "PortiaEventSummary"
 
 # See what lumi we are after
-region = "1" # %
+region = "0" # %
 if len(sys.argv) > 1:
     region = str(sys.argv[1])
 
@@ -53,6 +47,11 @@ load("libportia")
 load("libwaveform-tree")
 
 tray = I3Tray()
+#icetray.set_log_level(icetray.I3LogLevel.LOG_DEBUG)
+#icetray.set_log_level(icetray.I3LogLevel.LOG_TRACE)
+#icetray.set_log_level_for_unit('I3WaveFormTreeMakerModule',
+#                               icetray.I3LogLevel.LOG_DEBUG)
+
 file_list =  glob.glob(dataDir + physFileList)
 file_list.sort()
 #file_list.insert(0,gcdFile)
@@ -99,6 +98,7 @@ tray.AddModule("I3WaveFormTreeMakerModule","tree-maker")(
     ("PortiaEventName",        portia_event_name),
     ("ATWDWaveformName",       atwd_wave_name), # use calibration mode 1 */
     ("FADCWaveformName",       fadc_wave_name), # use calibration mode 1 */
+    #("FilledKeys",[OMKey(40,22), OMKey(40,23)])
     ("FilledKeys",[ OMKey(40,d) for d in range (1,22)] + 
      [ OMKey(49,d) for d in range (1,22)])
     )
