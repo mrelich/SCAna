@@ -1,55 +1,59 @@
 
-GetEnv = TRUE
-Executable = ../python/filter_data.py
-Universe = vanilla
-Log    = condor.log
+GetEnv     = TRUE
+Executable = ../python/FilterBase.py
+Universe   = vanilla
+Log        = condor.log
+SC         = SC2
 
 ###############################
 # 1% filter
 ###############################
-#Arguments = 1
-#Error     = errLogs/err_filter$(Arguments)per.log
-#Output    = outLogs/out_filter$(Arguments)per.log
-#queue
+Arguments = $(SC) 1
+Error     = errLogs/err_filter$(SC)_1per.log
+Output    = outLogs/out_filter$(SC)_1per.log
+queue
+
 
 ###############################
 # 3% filter
 ###############################
-Arguments = 3
-Error     = errLogs/err_filter$(Arguments)per.log
-Output    = outLogs/out_filter$(Arguments)per.log
+Arguments = $(SC) 3
+Error     = errLogs/err_filter$(SC)_3per.log
+Output    = outLogs/out_filter$(SC)_3per.log
 queue
 
 ###############################
 # 10% filter
 ###############################
-Arguments = 10
-Error     = errLogs/err_filter$(Arguments)per.log
-Output    = outLogs/out_filter$(Arguments)per.log
+Arguments = $(SC) 10
+Error     = errLogs/err_filter$(SC)_10per.log
+Output    = outLogs/out_filter$(SC)_10per.log
 queue
 
 ###############################
 # 30% filter
 ###############################
-Arguments = 30
-Error     = errLogs/err_filter$(Arguments)per.log
-Output    = outLogs/out_filter$(Arguments)per.log
+Arguments = $(SC) 30
+Error     = errLogs/err_filter$(SC)_30per.log
+Output    = outLogs/out_filter$(SC)_30per.log
 queue
 
 ###############################
 # 51% filter
 ###############################
-Arguments = 51
-Error     = errLogs/err_filter$(Arguments)per.log
-Output    = outLogs/out_filter$(Arguments)per.log
+Arguments = $(SC) 51
+Error     = errLogs/err_filter$(SC)_51per.log
+Output    = outLogs/out_filter$(SC)_51per.log
 queue
 
 ###############################
 # 100% filter
 ###############################
-Arguments = 100
-Error     = errLogs/err_filter$(Arguments)per.log
-Output    = outLogs/out_filter$(Arguments)per.log
+Arguments = $(SC) 100
+Error     = errLogs/err_filter$(SC)_100per.log
+Output    = outLogs/out_filter$(SC)_100per.log
 queue
+
+
 
 

@@ -51,7 +51,7 @@ class ConfigOptions:
         # check if cut nDOM is turned off
         # or help menu is called
         for i in range(len(argv)):
-            if "SC" in argv[i]:
+            if "SC1" == argv[i] or "SC2" == argv[i]:
                 self.SC = argv[i]
                 self.p_lumi = LumiProp(argv[i])
                 self.Initialized = True
@@ -63,15 +63,19 @@ class ConfigOptions:
         
         # If SC not specified, cannot continue
         if not self.Initialized: return
-
+        
         # Check if one of the allowed lumi
         allowedRegions = self.p_lumi.getLumis()
         for i in range(len(argv)):
-            for j in range(len(argv)):
+            for j in range(len(allowedRegions)):
                 if argv[i] == allowedRegions[j]:
                     self.lumi = str(argv[i])
                     self.cutUTC = True
 
+        # Print some information
+        print "Configuration initialized"
+        print "SC:   ", self.SC
+        print "Lumi: ", self.lumi 
 
         # Set the input file names
         self.setInput()

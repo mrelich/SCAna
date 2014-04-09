@@ -191,9 +191,10 @@ userPrint("Wave Splitter added")
 # Portia will take the waveforms and
 # actually calibrate them
 #-----------------------------#
-LEThres = 0
+LEThresh = 0
 if m_config.cutUTC: # if lumi cut is defined
     LEThresh = m_config.p_lumi.getLEThreshold(m_config.lumi) * I3Units.V
+userPrint("Setting threshold: " + str(LEThresh))
 tray.AddModule( "I3Portia", "Portia") (
     ( "DataReadoutName",            "CleanInIceRawData" ),
     ( "OutPortiaEventName",         "PortiaEventSummary" ),

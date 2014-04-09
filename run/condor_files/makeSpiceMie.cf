@@ -1,55 +1,56 @@
 
-GetEnv = TRUE
-Executable = ../python/make_spicemie.py
-Universe = vanilla
-Log    = condor.log
+GetEnv         = TRUE
+Executable     = ../python/SpiceMieGen.py
+Universe       = vanilla
+Log            = condor.log
+StandardCandle = SC2
 
 ###############################
 # 1% filter
 ###############################
-Arguments = 1
-Error     = errLogs/err_makeMC_$(Arguments)per.log
-Output    = outLogs/out_makeMC_$(Arguments)per.log
+Arguments = $(StandardCandle) 1
+Error     = errLogs/err_makeMC_$(StandardCandle)_1per.log
+Output    = outLogs/out_makeMC_$(StandardCandle)_1per.log
 queue
 
 ###############################
 # 3% filter
 ###############################
-Arguments = 3
-Error     = errLogs/err_makeMC_$(Arguments)per.log
-Output    = outLogs/out_makeMC_$(Arguments)per.log
+Arguments = $(StandardCandle) 3
+Error     = errLogs/err_makeMC_$(StandardCandle)_3per.log
+Output    = outLogs/out_makeMC_$(StandardCandle)_3per.log
 queue
 
 ###############################
 # 10% filter
 ###############################
-Arguments = 10
-Error     = errLogs/err_makeMC_$(Arguments)per.log
-Output    = outLogs/out_makeMC_$(Arguments)per.log
+Arguments = $(StandardCandle) 10
+Error     = errLogs/err_makeMC_$(StandardCandle)_10per.log
+Output    = outLogs/out_makeMC_$(StandardCandle)_10per.log
 queue
 
 ###############################
 # 30% filter
 ###############################
-Arguments = 30
-Error     = errLogs/err_makeMC_$(Arguments)per.log
-Output    = outLogs/out_makeMC_$(Arguments)per.log
+Arguments = $(StandardCandle) 30
+Error     = errLogs/err_makeMC_$(StandardCandle)_30per.log
+Output    = outLogs/out_makeMC_$(StandardCandle)_30per.log
 queue
 
 ###############################
 # 51% filter
 ###############################
-Arguments = 51
-Error     = errLogs/err_makeMC_$(Arguments)per.log
-Output    = outLogs/out_makeMC_$(Arguments)per.log
+Arguments = $(StandardCandle) 51
+Error     = errLogs/err_makeMC_$(StandardCandle)_51per.log
+Output    = outLogs/out_makeMC_$(StandardCandle)_51per.log
 queue
 
 ###############################
 # 100% filter
 ###############################
-Arguments = 100
-Error     = errLogs/err_makeMC_$(Arguments)per.log
-Output    = outLogs/out_makeMC_$(Arguments)per.log
+Arguments = $(StandardCandle) 100
+Error     = errLogs/err_makeMC_$(StandardCandle)_100per.log
+Output    = outLogs/out_makeMC_$(StandardCandle)_100per.log
 queue
 
 
