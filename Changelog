@@ -2,6 +2,7 @@
 	* Updated analysis code for filtering data
 	* Going to commit, recheckout and start new working area.
 	* Removing i3files and trees directory.  Making part of setup scripts
+	* Adding setup directory structure
 
 2014-04-07 Matt:
 	* Updating analysis scripts to current state
