@@ -10,8 +10,8 @@
 #include "TLine.h"
 
 // Decide if we will look at SC1 or SC2
-//bool isSC2 = true;
-bool isSC2 = false;
+bool isSC2 = true;
+//bool isSC2 = false;
 
 // directory to save plots in
 TString savedir = "../plots/Unfiltered/";
@@ -299,7 +299,10 @@ void checkWaveformFormat()
   // variables from checkwavetime(...) function.
   //TFile* file = new TFile("../plots/RootPlots/cutWaveTimeVars1.root");
   //TFile* file = new TFile("../plots/RootPlots/cutWaveTimeVars.root");
-  TFile* file = new TFile("../plots/RootPlots/cutWaveTimeVars_refined.root");
+  //TFile* file = new TFile("../plots/RootPlots/cutWaveTimeVars_refined.root");
+  //TFile* file = new TFile("../plots/RootPlots/cutWaveTimeVars_AddedCounter.root");
+  //TFile* file = new TFile("../plots/RootPlots/cutWaveTimeVars_CutOnCounter.root");
+  TFile* file = new TFile("../plots/RootPlots/cutWaveTimeVars_AddedMaxVTime.root");
   
   // There are three essential plots I want to look at.
   // 1.) amplitude
@@ -322,7 +325,9 @@ void checkWaveformFormat()
   //ampPlot(file, filters);
   //npulsePlot(file, filters);
   //tDiffPlot(file, filters);
-  tDiffMaxPlot(file, filters);
+  //tDiffMaxPlot(file, filters);
+  //nDomPlot(file, filters);
+  tDiffMaxPlotForMaxV(file, filters);
 
 }
 
@@ -541,6 +546,97 @@ void tDiffMaxPlot(TFile* file, vector<TString> filters)
 
   // Create canvas
   TCanvas* c = makeCanvas("c");
+  //c->SetLogy();
+  
+  // Make legend
+  TLegend* leg = makeLegend(0.7,0.8,0.8,0.9);
+
+  // Loop and plot
+  TH1* hist = NULL;
+  for(unsigned int i=0; i<filters.size(); ++i){
+    leg->Clear();
+    leg->SetHeader("Filter");
+    TString filter = filters.at(i);
+    
+    hist = getHist(file,pname+"_"+filter,xtitle,ytitle,
+		   m_colors[i], m_markers[i]);
+    
+    leg->AddEntry(hist,(filter+"%").Data(),"l");
+    hist->Draw();
+
+    // Draw legend
+    leg->Draw("same");
+
+    // Save 
+    //c->SaveAs((savedir+"maxTimeDiff_filter"+filter+"_nonlog.png").Data());
+    c->SaveAs((savedir+"maxTimeDiff_cutOnCounter_filter"+filter+"_nonlog.png").Data());
+
+  }// end loop over filters
+
+	       
+}
+
+//------------------------------------------//
+// Plotting the maximum time difference
+// for the maximum amplitude wave
+//------------------------------------------//
+void tDiffMaxPlotForMaxV(TFile* file, vector<TString> filters)
+{
+
+  // Specify the titles
+  TString xtitle = "Max(LEtime - wavetime) [ns]";
+  TString ytitle = "Entries";
+
+  // Histogram name
+  TString pname = "h_maxTDiff_forMaxV";
+
+  // Create canvas
+  TCanvas* c = makeCanvas("c");
+  //c->SetLogy();
+  
+  // Make legend
+  TLegend* leg = makeLegend(0.7,0.8,0.8,0.9);
+
+  // Loop and plot
+  TH1* hist = NULL;
+  for(unsigned int i=0; i<filters.size(); ++i){
+    leg->Clear();
+    leg->SetHeader("Filter");
+    TString filter = filters.at(i);
+    
+    hist = getHist(file,pname+"_"+filter,xtitle,ytitle,
+		   m_colors[i], m_markers[i]);
+    
+    leg->AddEntry(hist,(filter+"%").Data(),"l");
+    hist->Draw();
+
+    // Draw legend
+    leg->Draw("same");
+
+    // Save 
+    //c->SaveAs((savedir+"maxTimeDiff_filter"+filter+"_nonlog.png").Data());
+    //c->SaveAs((savedir+"maxTimeDiff_cutOnCounter_filter"+filter+"_nonlog.png").Data());
+
+  }// end loop over filters
+
+	       
+}
+
+//------------------------------------------//
+// Plot nDOM
+//------------------------------------------//
+void nDomPlot(TFile* file, vector<TString> filters)
+{
+
+  // Specify the titles
+  TString xtitle = "nDOM (w/Amp > 0.01 V)";
+  TString ytitle = "Entries";
+
+  // Histogram name
+  TString pname = "h_nDOM";
+
+  // Create canvas
+  TCanvas* c = makeCanvas("c");
   c->SetLogy();
   
   // Make legend
@@ -563,7 +659,7 @@ void tDiffMaxPlot(TFile* file, vector<TString> filters)
     leg->Draw("same");
 
     // Save 
-    c->SaveAs((savedir+"maxTimeDiff_filter"+filter+".png").Data());
+    c->SaveAs((savedir+"nDOMAboveLEThres_filter"+filter+".png").Data());
 
   }// end loop over filters
 

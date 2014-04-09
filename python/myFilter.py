@@ -1,10 +1,11 @@
 #!/usr/bin/env pythong
 
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-# This will be where my filtering script will develop. For now I am #
-# having some issues making waveforms from the output i3files, so I #
-# hope to simplify the current filtering python scripts.            #
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=#
+# This will be where my filtering script will develop. I thinks what #
+# I will do is have it read in a text file that can set the relevant #
+# parameters needed to execute, and then it will run.  The output    #
+# will be written to i3files/ and data/ in the SCAna directory.      # 
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=#
 
 #-----------------------------#
 # Import necessaries
@@ -35,6 +36,17 @@ I3Tray.load("libportia")
 I3Tray.load("libtree-maker")
 
 #-----------------------------#
+# Get User Inputs
+#-----------------------------#
+argv = sys.argv
+argc = len(argv)
+
+# get inputs
+if argc != 1:
+    print "Usage script.py config.txt"
+    sys.exit()
+
+#-----------------------------#
 # Initialize variables
 #-----------------------------#
 
@@ -56,21 +68,6 @@ p_lumi = lumiProp()
 rootoutdir = "../trees"
 i3outdir   = "../i3files"
 
-
-#-----------------------------#
-# Get User Inputs
-#-----------------------------#
-argv = sys.argv
-argc = len(argv)
-
-# get inputs
-if argc != 2:
-    print "Usage script.py <number>"
-    print "where number must be 1,3,10,30,50,100"
-    sys.exit()
-
-# Save lumi argument
-lumi_arg = str(argv[1])
 
 #-----------------------------#
 # Specify input files and the

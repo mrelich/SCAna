@@ -37,7 +37,11 @@ fileList = ['../i3files/SC2_100per_EHEClean_DOMcalib_WaveCalib.i3.gz']
 
 # File
 #outfile = TFile("../plots/RootPlots/cutWaveTimeVars_refined.root","recreate")
-outfile = TFile("../plots/RootPlots/cutWaveTimeVars_wNDOMCheck.root","recreate")
+#outfile = TFile("../plots/RootPlots/cutWaveTimeVars_wNDOMCheck.root","recreate")
+#outfile = TFile("../plots/RootPlots/cutWaveTimeVars_AddedCounter.root","recreate")
+#outfile = TFile("../plots/RootPlots/cutWaveTimeVars_CutOnCounter.root","recreate")
+outfile = TFile("../plots/RootPlots/cutWaveTimeVars_AddedMaxVTime.root","recreate")
+#outfile = TFile("../plots/RootPlots/cutWaveTimeVars_AddedMaxVTime_LEThresh0_1.root","recreate")
 
 # Amplitude bins
 nampbins = 10000
@@ -66,10 +70,12 @@ h_tDiff_perLumi = []
 h_maxTDiff = TH1F("h_maxTDiff","",timebins,tmin,tmax)
 h_maxTDiff_perLumi = []
 h_maxTDiff_passLCBit_perLumi = []
+h_maxTDiff_forMaxV_perLumi = []
 for lumi in allowedLumis:
     h_tDiff_perLumi.append( TH1F("h_tDiff_"+lumi,"",timebins,tmin,tmax) )
     h_maxTDiff_perLumi.append( TH1F("h_maxTDiff_"+lumi,"",timebins,tmin,tmax) )
     h_maxTDiff_passLCBit_perLumi.append( TH1F("h_maxTDiff_passLCBit_"+lumi,"",timebins,tmin,tmax) )
+    h_maxTDiff_forMaxV_perLumi.append( TH1F("h_maxTDiff_forMaxV_"+lumi,"",timebins,tmin,tmax) )
 
 # Time difference vs. NPE
 NPEbins = 1000
@@ -80,6 +86,18 @@ h_maxTDiff_vs_NPE_perLumi = []
 for lumi in allowedLumis:
     h_maxTDiff_vs_NPE_perLumi.append( TH2F("h_maxTDiff_vs_NPE_"+lumi,"",timebins,tmin,tmax,NPEbins,NPEmin,NPEmax) )
     
+
+# Need counters to see # of doms that
+# fire and the maximum time diff
+DOMbins = 50
+DOMmin  = -0.5
+DOMmax  = DOMbins + DOMmin
+h_nDOM_perLumi = []
+h_nDOM_vs_maxTDiff_perLumi = []
+for lumi in allowedLumis:
+    h_nDOM_perLumi.append( TH1F("h_nDOM_"+lumi,"",DOMbins,DOMmin,DOMmax) )
+    h_nDOM_vs_maxTDiff_perLumi.append( TH2F("h_nDOM_vs_maxTDiff_"+lumi,"",DOMbins,DOMmin,DOMmax,timebins,tmin,tmax) )
+
 
 #
 ## Timing Check
@@ -145,9 +163,11 @@ def cutwavetime(frame, Streams6=[icetray.I3Frame.DAQ]):
     
     counter = 0
     max_time_diff = 0.0
-    min_amp = 1.0
+    max_amp = 0
     m_NPE     = 0
     m_LCBit   = 0
+    LEThres   = 0.01
+    max_time_largestV = 0
     for omkey, portiapulse in pulses:
         if omkey in near_sc:
 
@@ -158,6 +178,10 @@ def cutwavetime(frame, Streams6=[icetray.I3Frame.DAQ]):
             waveform_series = calib_atwd.get(omkey)
             m_LCBit         = portiapulse.GetLCBit()
 
+            # Count above amplitude
+            if amplitude > LEThres:
+                counter += 1
+            
             # Fill hists for timing info
             h_amp.Fill(amplitude)
             if lumi_point >= 0:
@@ -174,7 +198,13 @@ def cutwavetime(frame, Streams6=[icetray.I3Frame.DAQ]):
                     if time_diff > max_time_diff:
                         max_time_diff = time_diff
                         m_NPE = NPE
-            
+                    if amplitude > max_amp:
+                        max_amp = amplitude
+                        max_time_largestV = time_diff
+
+    # Actually place the cut now
+    if counter < 14 : return False
+
     h_maxTDiff.Fill( max_time_diff )
     h_maxTDiff_vs_NPE.Fill(max_time_diff, m_NPE)
     if lumi_point >=0:
@@ -182,8 +212,9 @@ def cutwavetime(frame, Streams6=[icetray.I3Frame.DAQ]):
         h_maxTDiff_vs_NPE_perLumi[lumi_point].Fill(max_time_diff, m_NPE)
         if m_LCBit !=0 : 
             h_maxTDiff_passLCBit_perLumi[lumi_point].Fill(max_time_diff)
-
-
+        h_nDOM_perLumi[lumi_point].Fill( counter )
+        h_nDOM_vs_maxTDiff_perLumi[lumi_point].Fill(counter, max_time_diff)
+        h_maxTDiff_forMaxV_perLumi[lumi_point].Fill(max_time_largestV)
     # Hoping this will speed things up
     # by returning False...  not really
     # any noticable increase in speed

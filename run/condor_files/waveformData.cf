@@ -1,0 +1,40 @@
+
+GetEnv = TRUE
+Executable = ../python/makeWaveFormTree.py
+Universe = vanilla
+Log    = condor.log
+
+###############################
+# SC2 waveform tree
+###############################
+#Arguments  = 1
+#Error     = errLogs/err_waveformTree_$(Arguments).log
+#Output    = outLogs/out_waveformTree_$(Arguments).log
+#queue
+
+#Arguments  = 3
+#Error     = errLogs/err_waveformTree_$(Arguments).log
+#Output    = outLogs/out_waveformTree_$(Arguments).log
+#queue
+
+#Arguments  = 10
+#Error     = errLogs/err_waveformTree_$(Arguments).log
+#Output    = outLogs/out_waveformTree_$(Arguments).log
+#queue
+
+#Arguments  = 30
+#Error     = errLogs/err_waveformTree_$(Arguments).log
+#Output    = outLogs/out_waveformTree_$(Arguments).log
+#queue
+
+#Arguments  = 51
+#Error     = errLogs/err_waveformTree_$(Arguments).log
+#Output    = outLogs/out_waveformTree_$(Arguments).log
+#queue
+
+Arguments  = 100
+Error     = errLogs/err_waveformTree_$(Arguments).log
+Output    = outLogs/out_waveformTree_$(Arguments).log
+queue
+
+
