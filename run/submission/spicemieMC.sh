@@ -12,7 +12,6 @@ infile="condor_files/spicemieTemplate.cf"
 SC="SC2"
 arguments=(1 3 10 30 51 100)
 
-
 ############################
 # Loop
 ############################
