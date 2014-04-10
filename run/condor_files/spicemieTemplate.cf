@@ -1,0 +1,15 @@
+##########################################
+# Template for condor file. The user can #
+# change args and tag using sed          #
+##########################################
+
+GetEnv     = TRUE
+Executable = ../python/SpiceMieGen.py
+Universe   = vanilla
+Log        = condor.log
+Requirements = Machine != "rum"
+
+Arguments = args
+Error     = errLogs/err_spicemieGen_tag.log
+Output    = outLogs/out_spicemieGen_tag.log
+queue
