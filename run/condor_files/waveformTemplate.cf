@@ -1,0 +1,15 @@
+##########################################
+# Template for condor file. The user can #
+# change args and tag using sed          #
+##########################################
+
+GetEnv     = TRUE
+Executable = ../python/WaveFormTree.py
+Universe   = vanilla
+Log        = condor.log
+Requirements = Machine != "rum"
+
+Arguments = args
+Error     = errLogs/err_waveformTree_tag.log
+Output    = outLogs/out_waveformTree_tag.log
+queue
