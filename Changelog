@@ -1,6 +1,7 @@
 2014-04-10 Matt:
 	* Added new waveform script to make waveform trees
 	* Added submission directory for condor submits. Finally using sed!
+	* removing old python files and cleaning up 
 
 
 2014-04-08 Matt:
