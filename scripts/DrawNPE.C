@@ -19,6 +19,11 @@ double bmin = 0;
 double bmax = 1.e6;
 int lumi = 0;
 
+// Save directory
+//TString savedir = "../plots/NPE_1stFiltering/";
+//TString savedir = "../plots/NPE_2ndFiltering/";
+TString savedir = "../plots/NPE_TimeFiltering/";
+
 //----------------------------------------------------//
 // Main
 //----------------------------------------------------//
@@ -28,74 +33,81 @@ void DrawNPE(int option)
   //
   // Specify files
   //
-
   vector<TFile*> files;
+
   TString savename = "";
   if(option == 0){
     cout<<"Drawing 1% luminosity"<<endl;
-    files.push_back(new TFile("../trees/SC2_allNearbyDOM_SC1per_DOMcalib_before.tree.root"));
-    //files.push_back(new TFile("../trees/SC2_spicemie_hole100cm_1per.root"));
-    files.push_back(new TFile("../../SCAna_oldLumi/trees/SC2_spicemie_hole100cm_1per.root"));
+    //files.push_back(new TFile("../trees/SC2_filter1_cutNDOM400_tree.root"));
+    //files.push_back(new TFile("../trees/SC2_filter1_cutNDOM400_tree_wavetimeCut.root"));
+    files.push_back(new TFile("../trees/SC2_filter1_cutNDOM400_TRCut_tree.root"));
+    files.push_back(new TFile("../trees/SC2_SpiceMie_filter1_TA0003_tree.root"));
     nbins = 250;
     bmin = 54e3;
-    //bmax = 80e3;
-    bmax = 120e3;
+    bmax = 80e3;
+    //bmax = 120e3;
     savename = "SC2_comparison_1per.png";
     lumi = 1;
   }
   else if(option == 1){
     cout<<"Drawing 3% luminosity"<<endl;
-    files.push_back(new TFile("../trees/SC2_allNearbyDOM_SC3per_DOMcalib_before.tree.root"));
-    //files.push_back(new TFile("../trees/SC2_spicemie_hole100cm_3per.root"));
-    files.push_back(new TFile("../../SCAna_oldLumi/trees/SC2_spicemie_hole100cm_3per.root"));
+    //files.push_back(new TFile("../trees/SC2_filter3_cutNDOM400_tree.root"));
+    //files.push_back(new TFile("../trees/SC2_filter3_cutNDOM400_tree_wavetimeCut.root"));
+    files.push_back(new TFile("../trees/SC2_filter3_cutNDOM400_TRCut_tree.root"));
+    files.push_back(new TFile("../trees/SC2_SpiceMie_filter3_TA0003_tree.root"));
     nbins = 200;
     bmin = 90e3;
-    //bmax = 110e3;
-    bmax = 200e3;
+    bmax = 110e3;
+    //bmax = 200e3;
     savename = "SC2_comparison_3per.png";
     lumi = 3;
   }
   else if(option == 2){
     cout<<"Drawing 10% luminosity"<<endl;
-    files.push_back(new TFile("../trees/SC2_allNearbyDOM_SC10per_DOMcalib_before.tree.root"));
-    //files.push_back(new TFile("../trees/SC2_spicemie_hole100cm_10per.root"));
-    files.push_back(new TFile("../../SCAna_oldLumi/trees/SC2_spicemie_hole100cm_10per.root"));
+    //files.push_back(new TFile("../trees/SC2_filter10_cutNDOM400_tree.root"));
+    //files.push_back(new TFile("../trees/SC2_filter10_cutNDOM400_tree_wavetimeCut.root"));
+    files.push_back(new TFile("../trees/SC2_filter10_cutNDOM400_TRCut_tree.root"));
+    files.push_back(new TFile("../trees/SC2_SpiceMie_filter10_TA0003_tree.root"));
     nbins = 200;
     bmin = 175e3;
-    //bmax = 220e3;
-    bmax = 400e3;
+    bmax = 220e3;
+    //bmax = 400e3;
     savename = "SC2_comparison_10per.png";
     lumi = 10;
   }
   else if(option == 3){
     cout<<"Drawing 30% luminosity"<<endl;
-    files.push_back(new TFile("../trees/SC2_allNearbyDOM_SC30per_DOMcalib_before.tree.root"));
-    //files.push_back(new TFile("../trees/SC2_spicemie_hole100cm_30per.root"));
-    files.push_back(new TFile("../../SCAna_oldLumi/trees/SC2_spicemie_hole100cm_30per.root"));
+    //files.push_back(new TFile("../trees/SC2_filter30_cutNDOM400_tree.root"));
+    //files.push_back(new TFile("../trees/SC2_filter30_cutNDOM400_tree_wavetimeCut.root"));
+    files.push_back(new TFile("../trees/SC2_filter30_cutNDOM400_TRCut_TimeCut_tree.root"));
+    files.push_back(new TFile("../trees/SC2_SpiceMie_filter30_TA0003_tree.root"));
     nbins = 200;
     bmin = 320e3;
-    //bmax = 450e3;
-    bmax = 900e3;
+    bmax = 450e3;
+    //bmax = 900e3;
     savename = "SC2_comparison_30per.png";
     lumi = 30;
   }
   else if(option == 4){
     cout<<"Drawing 51% luminosity"<<endl;
-    files.push_back(new TFile("../trees/SC2_allNearbyDOM_SC51per_DOMcalib_before.tree.root"));
-    //files.push_back(new TFile("../trees/SC2_spicemie_hole100cm_51per.root"));
-    files.push_back(new TFile("../../SCAna_oldLumi/trees/SC2_spicemie_hole100cm_51per.root"));
+    //files.push_back(new TFile("../trees/SC2_filter51_cutNDOM400_tree.root"));
+    //files.push_back(new TFile("../trees/SC2_filter51_cutNDOM400_tree_wavetimeCut.root"));
+    files.push_back(new TFile("../trees/SC2_filter51_cutNDOM400_TRCut_TimeCut_tree.root"));
+    files.push_back(new TFile("../trees/SC2_SpiceMie_filter51_TA0003_tree.root"));
     nbins = 100;
     bmin = 400e3;
-    //bmax = 500e3;
-    bmax = 750e3;
+    bmax = 500e3;
+    //bmax = 750e3;
     savename = "SC2_comparison_51per.png";
     lumi = 51;
   }
   else if(option == 5){
     cout<<"Drawing 100% luminosity"<<endl;
-    files.push_back(new TFile("../trees/SC2_allNearbyDOM_SC100per_DOMcalib_before.tree.root"));
-    files.push_back(new TFile("../trees/SC2_spicemie_hole100cm_100per.root"));
-    //files.push_back(new TFile("../../SCAna_oldLumi/trees/SC2_spicemie_hole100cm_100per.root"));
+    //files.push_back(new TFile("../trees/SC2_filter100_cutNDOM400_tree.root"));
+    //files.push_back(new TFile("../trees/SC2_filter100_cutNDOM400_tree_wavetimeCut.root"));
+    files.push_back(new TFile("../trees/SC2_filter100_cutNDOM400_TRCut_TimeCut_tree.root"));
+    files.push_back(new TFile("../trees/SC2_SpiceMie_filter100_TA0003_tree.root"));
+
     nbins = 200;
     bmin = 650e3;
     bmax = 900e3;
@@ -204,7 +216,8 @@ void plot(vector<TTree*> trees, vector<TString> fnames, TString savename)
 
   // Save
   //c->SaveAs(("../plots/"+savename).Data());
-  c->SaveAs(("../plots/oldLumi_"+savename).Data());
+  //c->SaveAs(("../plots/oldLumi_"+savename).Data());
+  c->SaveAs((savedir + savename).Data());
 
   // Dump the peak information. Assumes Data is first
   // if you want Data/MC.  Otherwise you may have to 

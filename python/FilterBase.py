@@ -57,6 +57,12 @@ if not m_config.isValid():
 #
 tray = I3Tray.I3Tray()
 
+#
+## Temporary
+#
+#histFile = TFile("histFile.root","recreate")
+#h_dt = TH1F("h_dt","",100,0,500)
+
 ###############################################################
 #                   USER FILTERING METHODS                    #
 ############################################################### 
@@ -85,6 +91,10 @@ def utctimes(frame, Streams3=[icetray.I3Frame.DAQ]):
     # if not in range, false
     if not inRange: return False
     
+    # Check if it is in transition region
+    inTR = m_config.p_lumi.inTRRegion(daq_time)
+    if inTR: return False
+
     # Otherwise we are good
     return True
 
@@ -114,6 +124,81 @@ def opheliacheck(frame, Streams2=[icetray.I3Frame.DAQ]):
         
 userPrint("Filtering Modules defined")
 
+#-----------------------------#
+# Defining waveform cut. Look
+# at closest DOM to SC and 
+# require dT(peak,end) of 
+# waveform to be above some 
+# threshold.
+# NOTE: Right now this only
+# works for SC2!!!!
+#-----------------------------#
+def wavetimeCut(frame, Streams1=[icetray.I3Frame.DAQ]):
+    
+    global h_dt
+
+    # Currently only works for SC2, will
+    # always be true for SC1
+    if "SC1" in m_config.SC:
+        return True
+    
+    # Only placing requirement for 30,
+    # 51, and 100% filters
+    lumis = ["30","51","100"]
+    if m_config.lumi not in lumis:
+        return True
+
+    # Get ATWD and DOM launch info
+    calib_atwd = frame['CalibratedATWD']
+    cleanData  = frame['CleanInIceRawData']     
+    
+    # Loop over OM Keys and get calibrated ATWD
+    nearestDOMs = [OMKey(55,d) for d in range(37,51)]
+    maxLETime   = 0
+    for key, domlaunchs in cleanData:
+        for i in range(len(nearestDOMs)):
+
+            if key == nearestDOMs[i]:
+                # Get earliest dom launch
+                domTime = sys.float_info.max
+                passLC  = False     
+                for launch in domlaunchs:
+                    if launch.time < domTime:
+                        domTime = launch.time
+                        passLC  = launch.lc_bit
+                
+                # Not considering DOM when LCBit failed
+                if not passLC:  continue
+                if domTime < 0: continue
+
+                # Now have start time. Loop over calibrated
+                # waveforms and keep waveform that is closest
+                # to domlaunch time.
+                Waveforms = calib_atwd.get(key)
+                for waveform in Waveforms:
+                    if waveform.time <= domTime:
+                        binSize  = waveform.binWidth
+                        voltages = waveform.waveform
+                        for j in range(len(voltages)):
+                            Voltage = voltages[j]/I3Units.V
+                            if m_config.p_lumi.lumiVThresh(m_config.lumi) < Voltage:
+                                LETime = ((j * binSize))/I3Units.ns
+                                if LETime > maxLETime:
+                                    maxLETime = LETime
+                                    break # done with loop since found waveform
+                        break # done with loop since found waveform
+    
+    # end loop over DOMs
+
+    if maxLETime > m_config.p_lumi.lumiTimeCut(m_config.lumi):
+        return False
+
+    return True
+
+
+userPrint("wavetimeCut defined")
+
+
 ############################################################### 
 #   BELOW ADD ALL NECESSARY ICECUBE MODULES AND TURN ON USER  #
 #            MODULES BASED ON USER CONFIGURATION              #
@@ -130,6 +215,19 @@ tray.AddModule("I3Reader", "Reader")(
     )
 
 userPrint("Reader added")
+
+#-----------------------------#
+# testing
+#-----------------------------#
+counter = 0
+def count(frame,Streams2=[icetray.I3Frame.DAQ]):
+    global counter
+    if counter % 100 == 0:
+        print "--------------------------------"
+        print "Count: ", counter
+    counter+=1
+
+tray.AddModule(count, "count")
 
 #-----------------------------#
 # ADD UTC FILTER
@@ -159,6 +257,7 @@ if m_config.cutNDOM:
     tray.AddModule(checkndom, "ndomcheck")
     userPrint("Cutting on number of DOMs")
 
+
 #-----------------------------#
 # Wave Calibrator
 # This will calibrate the waves from
@@ -185,6 +284,9 @@ tray.AddModule("I3WaveformSplitter", "split",
                PickUnsaturatedATWD=True
                )
 userPrint("Wave Splitter added")
+
+# Place wavetime cut here.
+tray.AddModule(wavetimeCut, "userWavetimeCut")
 
 #-----------------------------#
 # Adding Portia
@@ -301,3 +403,6 @@ tray.Finish()
 # Print user message
 #-----------------------------#
 userPrint("Job is done.")
+
+#histFile.Write()
+#histFile.Close()

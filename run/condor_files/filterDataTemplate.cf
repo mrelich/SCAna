@@ -1,0 +1,15 @@
+##########################################
+# Template for condor file. The user can #
+# change args and tag using sed          #
+##########################################
+
+GetEnv     = TRUE
+Executable = ../python/FilterBase.py
+Universe   = vanilla
+Log        = condor.log
+Requirements = Machine != "rum"
+
+Arguments = args
+Error     = errLogs/err_filterData_tag.log
+Output    = outLogs/out_filterData_tag.log
+queue

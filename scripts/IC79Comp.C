@@ -6,6 +6,8 @@
 
 #include "../scripts/tools.C"
 
+TString savedir = "../plots/IC79Comp/";
+
 // range to be plotted
 float xmin = 5.e4;
 float xmax = 1.e6;
@@ -55,8 +57,8 @@ void plotDatavsMC()
   setAtt(gr_IC86, kBlue, 20);
 
   // Copy graph with a naive correction
-  TGraphErrors* gr_IC86_corr = getCorrectedGraph(gr_IC86);
-  setAtt(gr_IC86_corr, kMagenta, 22);
+  //TGraphErrors* gr_IC86_corr = getCorrectedGraph(gr_IC86);
+  //setAtt(gr_IC86_corr, kMagenta, 22);
 
   // Keiichi's results are hard-coded from his script
   double npe_data[10] = {9.51576e+04, 1.76736e+05, 3.24418e+05, 3.89808e+05, 6.72254e+05};
@@ -84,7 +86,7 @@ void plotDatavsMC()
   // Draw graphs
   gr_IC86->Draw("sameep");
   gr_IC79->Draw("sameep");
-  gr_IC86_corr->Draw("sameep");
+  //gr_IC86_corr->Draw("sameep");
   
   // Make a y=x line
   TF1* f = new TF1("f","x",xmin,xmax);
@@ -97,12 +99,12 @@ void plotDatavsMC()
   leg->AddEntry(f, "y = x", "l");
   leg->AddEntry(gr_IC86, "IC86 (M. Relich)", "ep");
   leg->AddEntry(gr_IC79, "IC79 (K. Mase)", "ep");
-  leg->AddEntry(gr_IC86_corr, "IC86 (naive correction)","ep");
-  leg->SetHeader("#bf{Preliminary}");
+  //leg->AddEntry(gr_IC86_corr, "IC86 (naive correction)","ep");
+  //leg->SetHeader("#bf{Preliminary}");
   leg->Draw("same");
   
-  //c->SaveAs("../plots/IC79_IC86_Comparison.png");
-  c->SaveAs("../plots/IC79_IC86_Comparison_wCor.png");
+  c->SaveAs((savedir+"IC79_IC86_Comparison.png").Data());
+  //c->SaveAs("../plots/IC79_IC86_Comparison_wCor.png");
 
 }
 
@@ -261,21 +263,21 @@ TGraphErrors* getMyGraph()
 
   // Set Data
   vector<TString> d_files;
-  //d_files.push_back("../trees/SC2_allNearbyDOM_SC1per_DOMcalib_before.tree.root");
-  d_files.push_back("../trees/SC2_allNearbyDOM_SC3per_DOMcalib_before.tree.root");
-  d_files.push_back("../trees/SC2_allNearbyDOM_SC10per_DOMcalib_before.tree.root");
-  d_files.push_back("../trees/SC2_allNearbyDOM_SC30per_DOMcalib_before.tree.root");
-  d_files.push_back("../trees/SC2_allNearbyDOM_SC51per_DOMcalib_before.tree.root");
-  d_files.push_back("../trees/SC2_allNearbyDOM_SC100per_DOMcalib_before.tree.root");
+  d_files.push_back("../trees/SC2_filter1_cutNDOM400_TRCut_tree.root");
+  d_files.push_back("../trees/SC2_filter3_cutNDOM400_TRCut_tree.root");
+  d_files.push_back("../trees/SC2_filter10_cutNDOM400_TRCut_tree.root");
+  d_files.push_back("../trees/SC2_filter30_cutNDOM400_TRCut_TimeCut_tree.root");
+  d_files.push_back("../trees/SC2_filter51_cutNDOM400_TRCut_TimeCut_tree.root");
+  d_files.push_back("../trees/SC2_filter100_cutNDOM400_TRCut_TimeCut_tree.root");
 
   // Set MC
   vector<TString> mc_files;
-  //mc_files.push_back("../trees/SC2_spicemie_hole100cm_1per.root");
-  mc_files.push_back("../trees/SC2_spicemie_hole100cm_3per.root");
-  mc_files.push_back("../trees/SC2_spicemie_hole100cm_10per.root");
-  mc_files.push_back("../trees/SC2_spicemie_hole100cm_30per.root");
-  mc_files.push_back("../trees/SC2_spicemie_hole100cm_51per.root");
-  mc_files.push_back("../trees/SC2_spicemie_hole100cm_100per.root");
+  mc_files.push_back("../trees/SC2_SpiceMie_filter1_TA0003_tree.root");
+  mc_files.push_back("../trees/SC2_SpiceMie_filter3_TA0003_tree.root");
+  mc_files.push_back("../trees/SC2_SpiceMie_filter10_TA0003_tree.root");
+  mc_files.push_back("../trees/SC2_SpiceMie_filter30_TA0003_tree.root");
+  mc_files.push_back("../trees/SC2_SpiceMie_filter51_TA0003_tree.root");
+  mc_files.push_back("../trees/SC2_SpiceMie_filter100_TA0003_tree.root");
 
   if(mc_files.size() != d_files.size()){
     cout<<"Don't have equal number of data and mc files"<<endl;

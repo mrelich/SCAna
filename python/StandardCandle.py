@@ -47,8 +47,8 @@ class StandardCandle:
     def __init__(self,SC,lumi):
         
         if SC == "SC1":
-            SCName = "SC1"
-            SCpos  = self.SC1_pos
+            self.SCName = "SC1"
+            self.SCpos  = self.SC1_pos
             
             for pair in self.SC1_intensities:
                 if lumi == pair[0]:
@@ -57,9 +57,9 @@ class StandardCandle:
 
         # end if SC1
         elif SC == "SC2":
-            SCName = "SC2"
-            SCpos  = self.SC2_pos
-            
+            self.SCName = "SC2"
+            self.SCpos  = self.SC2_pos
+
             for pair in self.SC2_intensities:
                 if lumi == pair[0]:
                     self.intensity = pair[1]

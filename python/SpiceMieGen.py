@@ -56,7 +56,6 @@ load("libphotonics-service")
 
 m_MCOpt = MCOptions(sys.argv)
 
-
 ###############################################################
 #                   USER DEFINED METHODS                      #
 ###############################################################
@@ -102,9 +101,6 @@ userPrint("Added random services")
 #-----------------------------#
 # Add Photonic information
 #-----------------------------#
-#AmplitudeTable = '/misc/home/mase/work/I3/analysis/SC/process/photonics_tables/v173/SC2_SPICEMIE/data/new/sc2_mie.absfits'
-#TimingTable    = '/misc/home/mase/work/I3/analysis/SC/process/photonics_tables/v173/SC2_SPICEMIE/data/new/sc2_mie.probfits'
-
 tray.AddService('I3PhotoSplineServiceFactory', 'photonics-service',
                 AmplitudeTable='/misc/home/mase/work/I3/analysis/SC/process/photonics_tables/v173/SC2_SPICEMIE/data/new/sc2_mie.absfits',
 		TimingTable='/misc/home/mase/work/I3/analysis/SC/process/photonics_tables/v173/SC2_SPICEMIE/data/new/sc2_mie.probfits',
@@ -149,6 +145,7 @@ tray.AddModule("I3SCGenerator","generator")(
     ("yPosition",m_MCOpt.SC.SCpos[1]*I3Units.m),
     ("zPosition",m_MCOpt.SC.SCpos[2]*I3Units.m)
     )
+
 
 userPrint("SC properties have been set")
 
@@ -425,7 +422,7 @@ tray.AddModule("I3TreeMakerModule","tree-maker")(
     ("doTopTree",               False),
     #
     ("doAddPulseEventTree",     True),
-    ("inAddPulseEventName",     "SummaryPulseInfo"),                               
+    ("inAddPulseEventName",     "FirstPortiaEventSummary"),                               
     ("inAddDOMLaunchName",      "HLCCleanInIceRawData")                    
 )
 

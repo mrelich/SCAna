@@ -123,7 +123,12 @@ class ConfigOptions:
         if self.cutUTC:  outname += "_filter" + self.lumi
         if self.cutNDOM: outname += "_cutNDOM"+str(self.nDOMReq)
 
-        self.I3Name   += outname + "_WaveCalib.i3.gz"
-        self.TreeName += outname + "_tree.root"
+        #self.I3Name   += outname + "_WaveCalib_wavetimeCut.i3.gz"
+        #self.TreeName += outname + "_tree_wavetimeCut.root"
 
+        #self.I3Name   += outname + "_TRCut_WaveCalib.i3.gz"
+        #self.TreeName += outname + "_TRCut_tree.root"
+
+        self.I3Name   += outname + "_TRCut_TimeCut_WaveCalib.i3.gz"
+        self.TreeName += outname + "_TRCut_TimeCut_tree.root"
         

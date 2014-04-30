@@ -10,7 +10,8 @@ infile="condor_files/filterDataTemplate.cf"
 #arguments=(0 1 2 3 4 5 6)
 
 SC="SC2"
-arguments=(1 3 10 30 51 100)
+#arguments=(1 3 10 30 51 100)
+arguments=(30 51 100)
 
 
 ############################

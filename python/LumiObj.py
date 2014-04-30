@@ -11,11 +11,12 @@ class LumiObj:
     #------------------------------#
     # Constructor
     #------------------------------#
-    def __init__(self,lumi,lowBound,upBound,factor,LEThres):
+    def __init__(self,lumi,lowBound,upBound,factor,LEThres,LETime):
         self.lumi        = lumi      # String for lumi number
         self.timeLow     = lowBound  # Lower bound for timing cut
         self.timeHigh    = upBound   # Upper bound for timing cut
-        self.LEThreshold = LEThres   # LE threshold for Portia
+        self.LEThresh    = LEThres   # LE threshold for Portia
+        self.LETimeCut   = LETime
 
         # Scale time up by the appropriate factor
         # This is done for convenience so I don't have

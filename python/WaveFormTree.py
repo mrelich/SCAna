@@ -84,13 +84,13 @@ portia_event_name = "PortiaEventSummary"
 in_ice_rawdata       = "CleanInIceRawData"
 if isMC:
     in_ice_rawdata = "HLCCleanInIceRawData"
-
+    
 #---------------------------#
 # Specify the output file
 # and input file
 #---------------------------# 
 
-outrootfile   = pwd + "/../" + outName + ".root"
+outrootfile   = pwd + "/../trees/" + outName + ".root"
 inputFileList = [inputfile,] 
 
 

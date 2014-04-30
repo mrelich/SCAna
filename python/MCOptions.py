@@ -69,6 +69,7 @@ class MCOptions:
         
         # Initialize the SC properties
         self.SC = StandardCandle(self.SCName, self.Lumi)
+
         if not self.SC.Initialized:
             print "SC not set. Please see StandardCandle.py"
             sys.exit()

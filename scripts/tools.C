@@ -58,14 +58,16 @@ void setAtt(TH1* &h, TString xtitle, TString ytitle,
 //--------------------------------------------------------//
 // Set histogram attributes
 //--------------------------------------------------------//
-void setAtt(TH2* &h, TString xtitle, TString ytitle)
+void setAtt(TH2* &h, TString xtitle, TString ytitle, TString ztitle="")
 {
 
   h->GetXaxis()->SetTitle(xtitle.Data());
   h->GetYaxis()->SetTitle(ytitle.Data());
+  h->GetZaxis()->SetTitle(ztitle.Data());
   h->SetTitle("");
   h->SetStats(0);
   h->GetYaxis()->SetTitleOffset(1.5);
+  h->GetZaxis()->SetTitleOffset(1.2);
 
 }
 
@@ -134,11 +136,12 @@ TLatex* makeLatex()
 // Make frame histogram
 //--------------------------------------------------------//
 TH1F* makeFrame(TString name, int nbins, float xmin, float xmax,
-		TString xtitle, TString ytitle)
+		TString xtitle, TString ytitle, int color=kBlack,
+		int marker=20)
 {
 
   TH1F* h = new TH1F(name.Data(),"",nbins,xmin,xmax);
-  setAtt(h, xtitle, ytitle, kBlack, 20);
+  setAtt(h, xtitle, ytitle, color,marker);
   return h;
 
 }
@@ -151,5 +154,61 @@ void setMax(TH1F* h, float& maximum)
   float h_max = h->GetMaximum();
   if( maximum < h_max )
     maximum = h_max;
+
+}
+
+//--------------------------------------------------------//
+// Reset Waveform plot. Want to reset the x-axis such
+// that all waveforms correspond to same start time
+//--------------------------------------------------------//
+void resetTime(TGraph* &gr, float start)
+{
+
+  // Get the number of points
+  int nP = gr->GetN();
+
+  // Loop over points and reset the x
+  // point such that it starts at 
+  // start time.
+  Double_t x     = 0;
+  Double_t y     = 0;
+  Double_t delta = 0;
+  for(int n=0; n<nP; ++n){
+    gr->GetPoint(n,x,y);
+    
+    if(n==0){
+      gr->SetPoint(n,start,y);
+      delta = x - start;
+    }
+    else{
+      gr->SetPoint(n, x - delta, y);
+    }
+
+  }// end loop over reseting points
+
+}
+
+//--------------------------------------------------------//
+// Find location of maximum point
+//--------------------------------------------------------//
+double findLocationMax(TGraph* gr)
+{
+
+  // Get N points
+  int np = gr->GetN();
+
+  // Loop and find maximum
+  double maxlocation = 0;
+  double maximum     = -999;
+  double x,y;
+  for(int n=0; n<np; ++n){
+    gr->GetPoint(n,x,y);
+    if( y > maximum){
+      maximum = y;
+      maxlocation = x;
+    }
+  }// end loop over points
+  
+  return maxlocation;
 
 }

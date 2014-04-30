@@ -40,7 +40,8 @@ fileList = ['../i3files/SC2_100per_EHEClean_DOMcalib_WaveCalib.i3.gz']
 #outfile = TFile("../plots/RootPlots/cutWaveTimeVars_wNDOMCheck.root","recreate")
 #outfile = TFile("../plots/RootPlots/cutWaveTimeVars_AddedCounter.root","recreate")
 #outfile = TFile("../plots/RootPlots/cutWaveTimeVars_CutOnCounter.root","recreate")
-outfile = TFile("../plots/RootPlots/cutWaveTimeVars_AddedMaxVTime.root","recreate")
+#outfile = TFile("../plots/RootPlots/cutWaveTimeVars_AddedMaxVTime.root","recreate")
+outfile = TFile("../plots/RootPlots/cutWaveTimeVars.root","recreate")
 #outfile = TFile("../plots/RootPlots/cutWaveTimeVars_AddedMaxVTime_LEThresh0_1.root","recreate")
 
 # Amplitude bins
@@ -98,6 +99,90 @@ for lumi in allowedLumis:
     h_nDOM_perLumi.append( TH1F("h_nDOM_"+lumi,"",DOMbins,DOMmin,DOMmax) )
     h_nDOM_vs_maxTDiff_perLumi.append( TH2F("h_nDOM_vs_maxTDiff_"+lumi,"",DOMbins,DOMmin,DOMmax,timebins,tmin,tmax) )
 
+# Want to look at the DOMs on the SC string
+# and check the deltaT for those doms
+SCDoms = [40,41,42,43,44,45,46,47,48]
+h_dT_perDom_perLumi = []
+dTbins = 100
+dTmin  = 0
+dTmax  = 500
+for lumi in allowedLumis:
+    temp = []
+    for dom in SCDoms:
+        dTName = "h_DOM"+str(dom)+"_"+lumi
+        temp.append( TH1F(dTName,"",dTbins,dTmin,dTmax) )
+
+    h_dT_perDom_perLumi.append( temp )
+
+#
+## Fill dT for each dom per lumi
+#
+def fillDT(frame, Streams2=[icetray.I3Frame.DAQ]):
+    if 'ATWDPortiaPulse' not in frame:
+        print 'no pulse'
+        return False
+    
+    # Get ATWD info
+    calib_atwd = frame['CalibratedATWD']
+    cleanData  = frame['CleanInIceRawData']
+
+    # Get lumi point
+    lumi_point = checkTimes(frame)
+    if lumi_point < 0: 
+        return False
+
+    # Loop over OM Keys and get calibrated ATWD
+    # Set SC pulses
+    SC_DOMs = [OMKey(55,d) for d in SCDoms]
+    for i in range(len(SCDoms)):
+        
+        # Make OMKey
+        key        = OMKey(55,i)
+
+        # Get DOM launch
+        domlaunchs = cleanData.get(key)
+        
+        # Get Earliest time DOM launch
+        domTime = -1
+        passLC  = False
+        for launch in domlaunchs:
+            if domTime < launch.GetStartTime():
+                domTime = launch.GetStartTime()
+                passLC  = launch.GetLCBit()
+        
+        # Do not look at events where LCBit fail
+        if not passLC: return False
+        if domTime < 0: return False
+
+        # Now we have start time, loop over calibrated
+        # waveforms and keep the waveform that has shortest
+        # time
+        waveForms = calib_atwd.get(key)
+        dT       = -999
+        maxV     = -999
+        for waveform in waveForms:
+            if waveform.time <= domTime:
+                # This is it, record info
+                binSize  = waveform.GetBinWidth()
+                startT   = waveform.GetStartTime()
+                voltages = waveform.GetWaveform()
+                for i in range(len(voltages)):
+                    if maxV < voltages[i]:
+                        maxV = voltages[i]
+                        dT   = (i*binSize)/I3Units.ns
+                break
+        
+        # Now save the wavetime, if non-negative
+        if dT < 0: return False
+        
+        # Fill
+        h_dT_perDom_perLumi[i][lumi_point]->Fill(dT)
+
+    # end loop over doms
+    return True
+# End method
+        
+    
 
 #
 ## Timing Check
@@ -228,7 +313,8 @@ tray.AddModule("I3Reader", "Reader")(
                ("Filenamelist", fileList)
                )
 tray.AddModule(checkndom, "checkndom")
-tray.AddModule(cutwavetime, "cutwavetime")
+tray.AddModul(fillDT, "dtcheck")
+#tray.AddModule(cutwavetime, "cutwavetime")
 tray.AddModule("TrashCan","can")
 tray.Execute()
 tray.Finish()

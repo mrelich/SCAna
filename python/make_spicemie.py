@@ -370,7 +370,6 @@ tray.AddModule("I3TreeMakerModule","tree-maker")(
 tray.AddModule("I3Writer","writer", filename = physfile,
 #               DropOrphanStreams=[icetray.I3Frame.DAQ],                                  
                Streams=[icetray.I3Frame.DAQ, icetray.I3Frame.Physics],
-               #skipkeys=["CleanIceTopRawData", "CleanIceTopRawDataWODC","CleanInIceRawData", "CleanInIceRawDataWODC", "EHECalibratedATWD", "EHECalibratedFADC", "MCPMTResponseMap", "EHECalibratedWaveforms"]
 	       skipkeys=["CleanIceTopRawData", "CleanIceTopRawDataWODC","CleanInIceRawData", "CleanInIceRawDataWODC", "MCPMTResponseMap", "EHECalibratedWaveforms"]
                )
 
