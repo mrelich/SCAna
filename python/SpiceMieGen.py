@@ -27,6 +27,7 @@ from icecube.BadDomList import bad_dom_list_static
 #
 
 from MCOptions import *
+from PastConfigs import *
 
 #-----------------------------#
 # Load Libraries for modules
@@ -205,6 +206,10 @@ userPrint("First round of cleaning added")
 # Clean the launches
 # TODO: Look at what this does!!
 #-----------------------------#
+cleanedKeys = [] # empty for IC86
+if m_MCOpt.StringConfig == "IC79":
+    cleanedKeys = backToIC79()
+
 tray.AddModule("I3DOMLaunchCleaning","LaunchCleaning")(
     ("InIceInput", "CleanInIceRawData"),
     ("IceTopInput", "CleanIceTopRawData"),
@@ -212,7 +217,8 @@ tray.AddModule("I3DOMLaunchCleaning","LaunchCleaning")(
     ("IceTopOutput", "CleanIceTopRawDataFLC"),
     ("FirstLaunchCleaning",True),
     ("CleanedKeysList",""),
-    ("IcePickServiceKey","")
+    ("IcePickServiceKey",""),
+    ("CleanedKeys",cleanedKeys)
     )
 
 userPrint("Second round of cleaning added")
